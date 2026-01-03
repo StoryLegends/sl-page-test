@@ -1,5 +1,6 @@
+```javascript
 import Layout from '../components/Layout';
-import { FileSignature, Book, Gavel, MessageSquare, Map, Info } from 'lucide-react';
+import { ScrollText, Gavel, ShieldAlert, BookOpen } from 'lucide-react';
 
 const Rules = () => {
   return (
