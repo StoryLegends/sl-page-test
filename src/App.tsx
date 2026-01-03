@@ -1,22 +1,20 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import Footer from './components/Footer';
-import Background from './components/Background';
-import SeasonalEffects from './components/SeasonalEffects';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Main from './pages/Main';
+import About from './pages/About';
+import Rules from './pages/Rules';
+import History from './pages/History';
+import './App.css';
 
 function App() {
   return (
-    <div className="min-h-screen text-white selection:bg-yellow-500/30 relative">
-      <Background />
-      <SeasonalEffects />
-      <Navbar />
-      <main>
-        <Hero />
-        <Features />
-      </main>
-      <Footer />
-    </div>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/rules" element={<Rules />} />
+        <Route path="/history" element={<History />} />
+      </Routes>
+    </Router>
   );
 }
 
