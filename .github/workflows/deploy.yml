@@ -32,7 +32,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_BASE_URL: /sl-page/
+          VITE_BASE_URL: /
         run: npm run build
 
       - name: Upload artifact
