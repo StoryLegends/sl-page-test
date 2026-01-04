@@ -3,6 +3,7 @@ import { Check, X } from 'lucide-react';
 
 const CookieBanner = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     useEffect(() => {
         const consent = localStorage.getItem('cookieConsent');
@@ -13,17 +14,20 @@ const CookieBanner = () => {
 
     const handleAccept = () => {
         localStorage.setItem('cookieConsent', 'true');
-        setIsVisible(false);
+        setIsClosing(true);
+        setTimeout(() => {
+            setIsVisible(false);
+        }, 500);
     };
 
     const handleReject = () => {
-        window.location.href = 'https://google.com';
+        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
     };
 
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-[100] flex flex-col md:flex-row items-center md:items-end justify-center gap-4 md:gap-12 p-1 pb-0 bg-[#111] border-t-4 border-[#333] shadow-[0_-4px_20px_rgba(0,0,0,0.8)] animate-[slide-up_0.5s_ease-out] ">
+        <div className={`fixed bottom-0 left-0 right-0 z-[100] flex flex-col md:flex-row items-center md:items-end justify-center gap-4 md:gap-12 p-1 pb-0 bg-[#111] border-t-4 border-[#333] shadow-[0_-4px_20px_rgba(0,0,0,0.8)] ${isClosing ? 'animate-[slide-down_0.5s_ease-in_forwards]' : 'animate-[slide-up_0.5s_ease-out]'}`}>
             {/* Image */}
             <div className="w-64 h-64 md:w-72 md:h-72 shrink-0 relative overflow-hidden md:-mb-10">
                 <img
@@ -66,6 +70,10 @@ const CookieBanner = () => {
                 @keyframes slide-up {
                     from { transform: translateY(100%); }
                     to { transform: translateY(0); }
+                }
+                @keyframes slide-down {
+                    from { transform: translateY(0); }
+                    to { transform: translateY(100%); }
                 }
             `}</style>
         </div>
