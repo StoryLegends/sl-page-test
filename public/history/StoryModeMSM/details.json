@@ -1,12 +1,12 @@
 {
     "id": "3",
     "name": "StoryMode MSM",
-    "date": "2023-01-01",
+    "date": "?-04-2022",
     "description": "Начало всей истории",
     "seasons": [
         {
             "name": "StoryMode MSM",
-            "date": "2023-01-01",
+            "date": "?-04-2022",
             "s_description": "Первый сезон",
             "features": {
                 "online": "12 человек в среднем",
