@@ -6,7 +6,7 @@ export const seasonalEffects = {
   winter: {
     enabled: true,
     particles: ['❄️'],
-    count: 80,
+    count: 40,
     animation: 'snow-fall',
   },
   spring: {

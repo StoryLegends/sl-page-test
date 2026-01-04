@@ -14,7 +14,7 @@ const History = () => {
       title: "StoryLegends • AF",
       subtitle: "Второй сезон",
       description: "Эпоха расцвета. Новые механики, масштабные постройки и эпические события.",
-      color: "from-purple-500 to-pink-400",
+      color: "from-[#a855f7] to-[#084882]",
       date: "2024"
     },
     {
