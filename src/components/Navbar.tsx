@@ -22,6 +22,7 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'Главная', href: '/' },
+    { name: 'Донат', href: 'https://www.google.com/url?q=https%3A%2F%2Fboosty.to%2Flendspele%2Fdonate&sa=D&sntz=1&usg=AOvVaw3Z0GESsyGI4M3iAhwy0XBK' },
     { name: 'О сервере', href: '/about' },
     { name: 'Правила', href: '/rules' },
     { name: 'История', href: '/history' },
