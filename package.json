@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/generate-history.js && vite",
+    "build": "node scripts/generate-history.js && tsc -b && vite build",
+    "generate-history": "node scripts/generate-history.js",
     "postbuild": "cp dist/index.html dist/404.html",
     "lint": "eslint .",
     "preview": "vite preview"

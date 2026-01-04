@@ -3,6 +3,7 @@ import Main from './pages/Main';
 import About from './pages/About';
 import Rules from './pages/Rules';
 import History from './pages/History';
+import HistoryDetail from './pages/HistoryDetail';
 import ScrollToTop from './components/ScrollToTop';
 import SeasonalEffects from './components/SeasonalEffects';
 import NotFound from './pages/NotFound';
@@ -18,6 +19,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/rules" element={<Rules />} />
         <Route path="/history" element={<History />} />
+        <Route path="/history/:id" element={<HistoryDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
