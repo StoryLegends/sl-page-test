@@ -184,18 +184,10 @@
 /* Custom Utilities */
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.10);
-  }
-
-  /* Optimize glass effect on mobile */
-  @media (max-width: 768px) {
-    .glass {
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-    }
   }
 
   .glass-hover:hover {
@@ -234,12 +226,6 @@ body::before {
   z-index: 50;
 }
 
-/* Disable noise on mobile to prevent thermal throttling */
-@media (max-width: 768px) {
-  body::before {
-    display: none;
-  }
-}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
