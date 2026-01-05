@@ -6,6 +6,7 @@ import History from './pages/History';
 import HistoryDetail from './pages/HistoryDetail';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import UserAgreement from './pages/UserAgreement';
+import Licenses from './pages/Licenses';
 import ScrollToTop from './components/ScrollToTop';
 import SeasonalEffects from './components/SeasonalEffects';
 import NotFound from './pages/NotFound';
@@ -28,6 +29,7 @@ function App() {
         <Route path="/history/:id" element={<HistoryDetail />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/user-agreement" element={<UserAgreement />} />
+        <Route path="/licenses" element={<Licenses />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

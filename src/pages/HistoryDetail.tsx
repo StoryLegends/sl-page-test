@@ -378,7 +378,7 @@ const HistoryDetail = () => {
 
                 <div className="text-center mb-16">
                     <h1
-                        className="text-4xl md:text-7xl font-bold mb-8 bg-clip-text text-transparent drop-shadow-lg"
+                        className="text-4xl md:text-7xl font-bold mb-8 bg-clip-text text-transparent drop-shadow-lg pb-4 leading-tight"
                         style={{ backgroundImage: gradient }}
                     >
                         {details.name}

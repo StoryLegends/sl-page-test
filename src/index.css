@@ -235,6 +235,13 @@ body::before {
   z-index: 1;
 }
 
+/* Disable noise on mobile for performance */
+@media (max-width: 768px) {
+  body::before {
+    display: none;
+  }
+}
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

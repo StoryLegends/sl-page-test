@@ -35,6 +35,7 @@ const Footer: React.FC = () => {
               <div className="flex flex-col gap-1 mt-2">
                 <a href="/privacy-policy" className="hover:text-gray-400 transition-colors">Политика конфиденциальности</a>
                 <a href="/user-agreement" className="hover:text-gray-400 transition-colors">Пользовательское соглашение</a>
+                <a href="/licenses" className="hover:text-gray-400 transition-colors">Лицензии (Mods)</a>
               </div>
             </div>
 

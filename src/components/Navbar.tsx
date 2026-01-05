@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${scrolled ? 'py-3 md:py-4 bg-black/80 backdrop-blur-md shadow-lg' : 'py-3 md:py-6 bg-transparent'
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${scrolled ? 'py-3 md:py-4 bg-[#0a0a0a] shadow-lg' : 'py-3 md:py-6 bg-transparent'
         }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
       />
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed top-0 right-0 h-full w-64 bg-black/80 backdrop-blur-md border-l border-white/10 shadow-2xl z-[100] transition-transform duration-300 md:hidden flex flex-col ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+      <div className={`fixed top-0 right-0 h-full w-64 bg-[#0a0a0a] border-l border-white/10 shadow-2xl z-[100] transition-transform duration-300 md:hidden flex flex-col ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
         {/* Drawer Header with Close Button */}
         <div className="flex justify-end p-6">
