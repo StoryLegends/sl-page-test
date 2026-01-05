@@ -2,6 +2,10 @@
     "id": "4",
     "name": "StoryLegends SL",
     "date": "2023-2024",
+    "colors": [
+        "#FFD700",
+        "#00BFFF"
+    ],
     "description": "Начало легендарной истории",
     "seasons": [
         {
@@ -46,10 +50,12 @@
                 12,
                 13
             ],
-            "map": {
-                "description": "Так-же вы можете скачать карту",
-                "url": "https://drive.google.com/file/d/1FxLQKNwWf4tLqgV7YClquR8-Jtp192l3/view"
-            }
+            "map": [
+                {
+                    "description": "Скачать карту",
+                    "url": "https://drive.google.com/file/d/1FxLQKNwWf4tLqgV7YClquR8-Jtp192l3/view"
+                }
+            ]
         },
         "StoryLegends - начало",
         {

@@ -11,11 +11,11 @@ const GlassCard: React.FC<GlassCardProps> = ({
     className = '',
     variant = 'default'
 }) => {
-    const baseStyles = "glass rounded-2xl p-6 transition-all duration-300 relative overflow-hidden group";
+    const baseStyles = "glass rounded-2xl p-6 transition-all duration-300 relative group";
 
     const variants = {
-        default: "hover:bg-white/5 hover:border-white/10 hover:shadow-lg hover:shadow-white/5 hover:-translate-y-1",
-        highlight: "bg-gradient-to-br from-story-gold/10 to-legends-blue/10 border-story-gold/30 shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:shadow-[0_0_50px_rgba(255,215,0,0.2)] hover:-translate-y-2 scale-105 z-10"
+        default: "hover:bg-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-white/5 hover:-translate-y-1",
+        highlight: "bg-gradient-to-br from-story-gold/10 to-legends-blue/10 border-story-gold/30 shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:shadow-[0_0_50px_rgba(255,215,0,0.2)] hover:-translate-y-2 scale-105 z-10 overflow-hidden"
     };
 
     return (

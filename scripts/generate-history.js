@@ -33,7 +33,8 @@ function generateHistoryIndex() {
                             name: details.name,
                             description: details.description,
                             path: entry.name, // The folder name to construct the URL
-                            date: details.date
+                            date: details.date,
+                            colors: details.colors || undefined
                         });
                     }
                 } catch (error) {

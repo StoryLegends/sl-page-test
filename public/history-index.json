@@ -1,37 +1,57 @@
 [
   {
     "id": "5",
-    "name": "StoryLegends AF",
+    "name": "SL Ancient Fog",
     "description": "Новые главы истории",
     "path": "StoryLegends AF",
-    "date": "10-05-2025"
+    "date": "10-05-2025",
+    "colors": [
+      "#a855f7",
+      "#3b82f6"
+    ]
   },
   {
     "id": "4",
     "name": "StoryLegends SL",
     "description": "Начало легендарной истории",
     "path": "StoryLegends SL",
-    "date": "2023-2024"
+    "date": "2023-2024",
+    "colors": [
+      "#FFD700",
+      "#00BFFF"
+    ]
   },
   {
     "id": "3",
     "name": "StoryMode MSM",
     "description": "Начало всей истории",
     "path": "StoryModeMSM",
-    "date": "2023-01-01"
+    "date": "?-04-2022",
+    "colors": [
+      "#10b981",
+      "#3b82f6"
+    ]
   },
   {
     "id": "2",
     "name": "StoneShield SH",
     "description": "Суровые испытания. Хардкорное выживание и борьба за ресурсы",
     "path": "StoneSheild",
-    "date": "2023-01-01"
+    "date": "Дата утеряна",
+    "colors": [
+      "#78716c",
+      "#d97706"
+    ]
   },
   {
     "id": "1",
     "name": "2B2T Пародия",
-    "description": "Анархия без правил. Полная свобода действий и хаос.",
+    "description": "Анархия без правил. Полная свобода действий и хаос",
     "path": "2B2T",
-    "date": "2022-01-01"
+    "date": "Дата утеряна",
+    "colors": [
+      "#ef4444",
+      "#000000"
+    ]
   }
 ]

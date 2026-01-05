@@ -14,11 +14,21 @@ type PhotoItem = number | PhotoObject;
 const ImageCarousel = ({ photos, folderName, seasonName }: { photos: PhotoItem[], folderName: string, seasonName: string }) => {
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [selectedImage, setSelectedImage] = useState<PhotoItem | null>(null);
+    const [isClosing, setIsClosing] = useState(false);
 
     const getPhotoId = (item: PhotoItem) => typeof item === 'number' ? item : item.id;
     const getPhotoDescription = (item: PhotoItem) => typeof item === 'number' ? null : item.description;
 
+    const handleCloseLightbox = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setSelectedImage(null);
+            setIsClosing(false);
+        }, 300);
+    };
+
     const scroll = (direction: 'left' | 'right') => {
+        // ... (existing scroll logic)
         if (scrollContainerRef.current) {
             const container = scrollContainerRef.current;
             // Scroll by 1 image width + gap
@@ -130,115 +140,107 @@ const ImageCarousel = ({ photos, folderName, seasonName }: { photos: PhotoItem[]
             {/* Lightbox Modal */}
             {selectedImage !== null && createPortal(
                 <div
-                    className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm animate-[fade-in_0.2s_ease-out] flex flex-col items-center justify-center"
-                    onClick={() => setSelectedImage(null)}
+                    className={`fixed inset-0 z-[9999] bg-black/95 touch-none flex flex-col md:block items-center justify-center ${isClosing ? 'animate-[fade-out_0.3s_ease-out_forwards]' : 'animate-[fade-in_0.3s_ease-out]'}`}
+                    onClick={handleCloseLightbox}
                 >
-                    {/* Top Bar (Close Button) */}
-                    <div className="absolute top-0 left-0 right-0 p-4 flex justify-end z-[20000] pointer-events-none">
+                    {/* Image Container */}
+                    <div
+                        className="relative w-full h-[70vh] md:h-full flex items-center justify-center z-0 overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <TransformWrapper
+                            initialScale={1}
+                            minScale={1}
+                            maxScale={5}
+                            centerOnInit
+                            limitToBounds={true}
+                            panning={{ velocityDisabled: true }}
+                        >
+                            <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
+                                <img
+                                    key={getPhotoId(selectedImage)}
+                                    src={`/history/${folderName}/images/${getPhotoId(selectedImage)}.webp`}
+                                    alt={`${seasonName} full screen`}
+                                    className="max-w-full max-h-full md:max-h-screen object-contain will-change-transform"
+                                />
+                            </TransformComponent>
+                        </TransformWrapper>
+                    </div>
+
+                    {/* Mobile Controls Row */}
+                    <div className="w-full px-4 mt-4 flex items-center justify-between gap-4 md:hidden z-[10001]" onClick={(e) => e.stopPropagation()}>
                         <button
-                            className="pointer-events-auto text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition-all backdrop-blur-md"
-                            onClick={() => setSelectedImage(null)}
+                            className="bg-white/10 hover:bg-white/20 text-white rounded-full p-3 transition-colors backdrop-blur-md border border-white/10 shrink-0"
+                            onClick={(e) => { e.stopPropagation(); handlePrev(e); }}
+                            aria-label="Previous image"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+
+                        {getPhotoDescription(selectedImage) && (
+                            <div className="flex-1 bg-black/50 p-3 rounded-xl border border-white/10 backdrop-blur-sm max-h-24 overflow-y-auto">
+                                <p className="text-white text-sm font-medium text-center leading-relaxed">
+                                    {getPhotoDescription(selectedImage)}
+                                </p>
+                            </div>
+                        )}
+
+                        <button
+                            className="bg-white/10 hover:bg-white/20 text-white rounded-full p-3 transition-colors backdrop-blur-md border border-white/10 shrink-0"
+                            onClick={(e) => { e.stopPropagation(); handleNext(e); }}
+                            aria-label="Next image"
+                        >
+                            <ChevronRight className="w-6 h-6" />
+                        </button>
+                    </div>
+
+                    {/* Top Right Close Button */}
+                    <div className="absolute top-4 right-4 z-[10001]">
+                        <button
+                            className="bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-colors backdrop-blur-none"
+                            onClick={(e) => { e.stopPropagation(); handleCloseLightbox(); }}
                             aria-label="Close"
                         >
                             <X className="w-6 h-6" />
                         </button>
                     </div>
 
-                    {/* Main Content Wrapper - Centered */}
-                    <div className="w-full max-w-7xl max-h-screen flex flex-col items-center justify-center p-4 gap-4 relative">
+                    {/* Desktop Navigation Arrows */}
+                    <button
+                        className="hidden md:block absolute left-[10%] top-1/2 -translate-y-1/2 z-[10001] bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all backdrop-blur-none"
+                        onClick={(e) => { e.stopPropagation(); handlePrev(e); }}
+                        aria-label="Previous image"
+                    >
+                        <ChevronLeft className="w-8 h-8" />
+                    </button>
 
-                        {/* Image Area */}
-                        <div
-                            className="relative w-full h-auto max-h-[70vh] md:max-h-[85vh] flex items-center justify-center z-[10001] overflow-visible"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <TransformWrapper
-                                initialScale={1}
-                                minScale={1}
-                                maxScale={4}
-                                centerOnInit
-                            >
-                                <TransformComponent wrapperClass="!w-full !h-full flex items-center justify-center !overflow-visible" contentClass="!w-full !h-full flex items-center justify-center">
-                                    <img
-                                        key={getPhotoId(selectedImage)}
-                                        src={`/history/${folderName}/images/${getPhotoId(selectedImage)}.webp`}
-                                        alt={`${seasonName} full screen`}
-                                        className="max-w-full max-h-[70vh] md:max-h-[85vh] object-contain shadow-2xl"
-                                    />
-                                </TransformComponent>
-                            </TransformWrapper>
-                        </div>
+                    <button
+                        className="hidden md:block absolute right-[10%] top-1/2 -translate-y-1/2 z-[10001] bg-black/50 hover:bg-black/70 text-white rounded-full p-3 transition-all backdrop-blur-none"
+                        onClick={(e) => { e.stopPropagation(); handleNext(e); }}
+                        aria-label="Next image"
+                    >
+                        <ChevronRight className="w-8 h-8" />
+                    </button>
 
-                        {/* Mobile Bottom Bar (Navigation + Description) - Immediately below image */}
-                        <div
-                            className="md:hidden w-full flex items-center justify-between gap-4 z-[10000] shrink-0"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button
-                                className="text-white/90 hover:text-white bg-white/10 rounded-full p-3 transition-all"
-                                onClick={handlePrev}
-                                aria-label="Previous image"
-                            >
-                                <ChevronLeft className="w-6 h-6" />
-                            </button>
-
-                            <div className="flex-1 text-center">
-                                {getPhotoDescription(selectedImage) && (
-                                    <p className="text-white text-sm font-medium whitespace-pre-line line-clamp-2">
-                                        {getPhotoDescription(selectedImage)}
-                                    </p>
-                                )}
+                    {/* Desktop Description */}
+                    {getPhotoDescription(selectedImage) && (
+                        <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-[10001] w-[90%] max-w-2xl pointer-events-none">
+                            <div className="bg-black/90 p-4 rounded-xl text-center border border-white/10 pointer-events-auto">
+                                <p className="text-white text-lg font-medium whitespace-pre-line">
+                                    {getPhotoDescription(selectedImage)}
+                                </p>
                             </div>
-
-                            <button
-                                className="text-white/90 hover:text-white bg-white/10 rounded-full p-3 transition-all"
-                                onClick={handleNext}
-                                aria-label="Next image"
-                            >
-                                <ChevronRight className="w-6 h-6" />
-                            </button>
                         </div>
-
-                        {/* Desktop Navigation Arrows (Absolute) */}
-                        <button
-                            className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-[10002] text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-3 transition-all backdrop-blur-sm"
-                            onClick={handlePrev}
-                            aria-label="Previous image"
-                        >
-                            <ChevronLeft className="w-8 h-8" />
-                        </button>
-
-                        <button
-                            className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-[10002] text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-3 transition-all backdrop-blur-sm"
-                            onClick={handleNext}
-                            aria-label="Next image"
-                        >
-                            <ChevronRight className="w-8 h-8" />
-                        </button>
-
-                        {/* Desktop Description (Overlay) */}
-                        <div className="hidden md:block absolute bottom-8 left-0 right-0 flex justify-center px-4 pointer-events-none z-[10000]">
-                            {getPhotoDescription(selectedImage) && (
-                                <div
-                                    className="bg-black/60 backdrop-blur-md p-4 rounded-lg max-w-2xl text-center border border-white/10 animate-[fade-in_0.3s_ease-out_0.1s] pointer-events-auto"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
-                                    <p className="text-white text-lg font-medium whitespace-pre-line">
-                                        {getPhotoDescription(selectedImage)}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    )}
 
                     <style>{`
-                        @keyframes zoom-in {
-                            0% { opacity: 0; transform: scale(0.95); }
-                            100% { opacity: 1; transform: scale(1); }
-                        }
                         @keyframes fade-in {
                             0% { opacity: 0; }
                             100% { opacity: 1; }
+                        }
+                        @keyframes fade-out {
+                            0% { opacity: 1; }
+                            100% { opacity: 0; }
                         }
                     `}</style>
                 </div>,
@@ -286,7 +288,7 @@ interface Season {
     logo?: SeasonLogo;
     logos?: SeasonLogo[];
     video?: SeasonVideo;
-    map?: SeasonMap;
+    map?: SeasonMap | SeasonMap[];
 }
 
 interface HistoryDetails {
@@ -294,6 +296,7 @@ interface HistoryDetails {
     name: string;
     date: string;
     description: string;
+    colors?: string[];
     seasons: (Season | string)[]; // Array of seasons or text separators
     photos: number[]; // Global photos if any (though user asked for per-season carousel, keeping for compatibility)
 }
@@ -358,22 +361,29 @@ const HistoryDetail = () => {
         );
     }
 
+    const gradient = details.colors && details.colors.length > 0
+        ? `linear-gradient(to right, ${details.colors.join(', ')})`
+        : 'linear-gradient(to right, #c084fc, #3b82f6)'; // Purple to blue default
+
     return (
         <Layout>
             <div className="pt-20 lg:pt-24 pb-8 lg:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
                 <Link
                     to="/history"
-                    className="inline-flex items-center text-white hover:text-gray-300 mb-8 transition-colors"
+                    className="inline-flex items-center text-white/80 hover:text-white glass px-4 py-2 rounded-full transition-all hover:scale-105 mb-12 group"
                 >
-                    <ArrowLeft className="w-5 h-5 mr-2" />
+                    <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
                     Назад к истории
                 </Link>
 
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-minecraft">
+                    <h1
+                        className="text-4xl md:text-7xl font-bold mb-8 bg-clip-text text-transparent drop-shadow-lg"
+                        style={{ backgroundImage: gradient }}
+                    >
                         {details.name}
                     </h1>
-                    <p className="text-gray-200 max-w-2xl mx-auto whitespace-pre-line">
+                    <p className="text-gray-200 max-w-2xl mx-auto whitespace-pre-line text-lg">
                         {details.description}
                     </p>
                 </div>
@@ -383,15 +393,12 @@ const HistoryDetail = () => {
                         // Check if it's a text separator
                         if (typeof value === 'string') {
                             return (
-                                <div key={index} className="relative py-8">
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-white/10"></div>
-                                    </div>
-                                    <div className="relative flex justify-center z-10">
-                                        <span className="bg-[#050505] px-4 text-xl font-bold text-white font-minecraft">
-                                            {value}
-                                        </span>
-                                    </div>
+                                <div key={index} className="flex items-center gap-4 py-12">
+                                    <div className="h-px flex-1 opacity-50" style={{ background: `linear-gradient(to right, transparent, ${details.colors?.[0] || '#c084fc'})` }}></div>
+                                    <span className="text-xl md:text-3xl font-bold text-white shadow-lg text-center">
+                                        {value}
+                                    </span>
+                                    <div className="h-px flex-1 opacity-50" style={{ background: `linear-gradient(to left, transparent, ${details.colors?.[details.colors?.length - 1] || '#3b82f6'})` }}></div>
                                 </div>
                             );
                         }
@@ -403,7 +410,7 @@ const HistoryDetail = () => {
                         return (
                             <div key={index} className="space-y-8">
                                 <div className="text-center">
-                                    <h2 className="text-3xl font-bold text-white mb-2 font-minecraft">{season.s_description}</h2>
+                                    <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">{season.s_description}</h2>
                                 </div>
 
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -542,18 +549,20 @@ const HistoryDetail = () => {
                                                         <MapIcon className="w-5 h-5 text-green-500" />
                                                         Карта
                                                     </h3>
-                                                    <div className="text-gray-300 mb-4 text-sm">
-                                                        {season.map.description}
+                                                    <div className="flex flex-col gap-3">
+                                                        {(Array.isArray(season.map) ? season.map : [season.map]).map((mapItem, mapIndex) => (
+                                                            <a
+                                                                key={mapIndex}
+                                                                href={mapItem.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center justify-center px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors w-full"
+                                                            >
+                                                                <Download className="w-4 h-4 mr-2" />
+                                                                {mapItem.description}
+                                                            </a>
+                                                        ))}
                                                     </div>
-                                                    <a
-                                                        href={season.map.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
-                                                    >
-                                                        <Download className="w-4 h-4 mr-2" />
-                                                        Скачать карту
-                                                    </a>
                                                 </GlassCard>
                                             </div>
                                         )}
@@ -562,10 +571,12 @@ const HistoryDetail = () => {
                                     {/* Carousel (Mobile: 5, Desktop: Bottom) */}
                                     {season.photos && season.photos.length > 0 && (
                                         <div className="order-5 lg:col-span-2">
-                                            <div className="flex items-center gap-4 mb-8">
-                                                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/20"></div>
-                                                <h3 className="text-2xl font-bold text-white font-minecraft text-center">Скриншоты сервера</h3>
-                                                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/20"></div>
+                                            <div className="flex items-center gap-4 py-12">
+                                                <div className="h-px flex-1 opacity-50" style={{ background: `linear-gradient(to right, transparent, ${details.colors?.[0] || '#c084fc'})` }}></div>
+                                                <span className="text-xl md:text-3xl font-bold text-white shadow-lg text-center">
+                                                    Скриншоты сервера
+                                                </span>
+                                                <div className="h-px flex-1 opacity-50" style={{ background: `linear-gradient(to left, transparent, ${details.colors?.[details.colors?.length - 1] || '#3b82f6'})` }}></div>
                                             </div>
                                             <ImageCarousel
                                                 photos={season.photos}

@@ -32,7 +32,25 @@ const PrivacyPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">2. Использование файлов Cookie</h2>
+                            <h2 className="text-2xl font-bold text-white mb-4">2. Сроки хранения данных</h2>
+                            <p>
+                                В соответствии с принципами GDPR, мы устанавливаем четкие сроки хранения ваших данных:
+                            </p>
+                            <ul className="list-disc pl-6 mt-2 space-y-1">
+                                <li>
+                                    <strong className="text-white">Отклоненные заявки:</strong> Хранятся в течение <strong>3 месяцев</strong> для возможности рассмотрения апелляции. По истечении этого срока данные удаляются.
+                                </li>
+                                <li>
+                                    <strong className="text-white">Принятые заявки:</strong> Хранятся в течение всего периода активности игрока на сервере для обеспечения доступа и модерации.
+                                </li>
+                                <li>
+                                    <strong className="text-white">Неактивные аккаунты:</strong> Если игрок не заходил на сервер более <strong>6 месяцев</strong>, его заявка и связанные персональные данные удаляются.
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-white mb-4">3. Использование файлов Cookie</h2>
                             <p>
                                 Мы используем файлы cookie исключительно для обеспечения корректной работы сайта и анализа посещаемости.
                             </p>
@@ -50,21 +68,21 @@ const PrivacyPolicy = () => {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">3. Сторонние сервисы</h2>
+                            <h2 className="text-2xl font-bold text-white mb-4">4. Сторонние сервисы</h2>
                             <p>
                                 На сайте используются сторонние сервисы (Google Analytics, YouTube), которые могут собирать обезличенные данные в соответствии с их собственными политиками конфиденциальности. Мы не несем ответственности за данные, собираемые этими платформами.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">4. Отказ от ответственности (Mojang)</h2>
+                            <h2 className="text-2xl font-bold text-white mb-4">5. Отказ от ответственности (Mojang)</h2>
                             <p>
                                 StoryLegends не является официальным продуктом Minecraft. Мы никак не связаны с Mojang Studios или Microsoft. Все права на игру Minecraft принадлежат Mojang Studios.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold text-white mb-4">5. Контакты</h2>
+                            <h2 className="text-2xl font-bold text-white mb-4">6. Контакты</h2>
                             <p>
                                 По всем вопросам вы можете связаться с нами по электронной почте: <a href="mailto:info@storylegends.xyz" className="text-blue-400 hover:text-blue-300">info@storylegends.xyz</a>
                             </p>

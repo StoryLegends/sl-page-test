@@ -2,6 +2,10 @@
     "id": "3",
     "name": "StoryMode MSM",
     "date": "?-04-2022",
+    "colors": [
+        "#10b981",
+        "#3b82f6"
+    ],
     "description": "Начало всей истории",
     "seasons": [
         {
@@ -48,10 +52,12 @@
                 17,
                 18
             ],
-            "map": {
-                "description": "Так-же вы можете скачать карту",
-                "url": "https://drive.google.com/file/d/1WdR9ztablleoDinRB7fpbyi7qHAi8qP5/view?usp=drive_link"
-            }
+            "map": [
+                {
+                    "description": "Скачать карту",
+                    "url": "https://drive.google.com/file/d/1WdR9ztablleoDinRB7fpbyi7qHAi8qP5/view?usp=drive_link"
+                }
+            ]
         }
     ]
 }

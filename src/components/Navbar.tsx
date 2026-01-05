@@ -8,11 +8,20 @@ const Navbar: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const sentinel = document.getElementById('nav-sentinel');
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setScrolled(!entry.isIntersecting);
+    }, {
+      root: null,
+      threshold: 0,
+      rootMargin: "0px"
+    });
+
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
   }, []);
 
   // Close mobile menu when route changes
@@ -30,7 +39,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${scrolled ? 'py-4 bg-black/80 backdrop-blur-md' : 'py-6 bg-transparent'
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${scrolled ? 'py-3 md:py-4 bg-black/80 backdrop-blur-md shadow-lg' : 'py-3 md:py-6 bg-transparent'
         }`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}

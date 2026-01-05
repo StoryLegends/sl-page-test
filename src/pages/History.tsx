@@ -9,6 +9,8 @@ interface HistoryItem {
   description: string;
   path: string;
   date: string;
+  gradient?: string;
+  colors?: string[];
 }
 
 const History = () => {
@@ -63,52 +65,56 @@ const History = () => {
           {/* Central Line (hidden on mobile) */}
           <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent -translate-x-1/2 hidden md:block" />
 
-          {historyItems.map((item, index) => (
-            <div key={item.id} className={`relative flex items-center justify-between mb-16 md:mb-24 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-              } flex-col gap-8 md:gap-0`}>
+          {historyItems.map((item, index) => {
+            const gradientStyle = item.colors && item.colors.length > 0
+              ? `linear-gradient(to right, ${item.colors.join(', ')})`
+              : (item.gradient || 'linear-gradient(to right, #a855f7, #3b82f6)');
 
-              {/* Content Card */}
-              <Link to={`/history/${item.id}`} className="w-full md:w-[45%] group relative bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 z-10 block">
-                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500`} />
+            return (
+              <div key={item.id} className={`relative flex items-center justify-between mb-16 md:mb-24 ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                } flex-col gap-8 md:gap-0`}>
 
-                <div className="p-6 md:p-8">
-                  <div className="flex justify-between items-start mb-6">
-                    <div>
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/10 mb-3 text-white`}>
-                        ID: {item.id}
-                      </span>
-                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 transition-all">
+                {/* Content Card */}
+                <Link to={`/history/${item.id}`} className="w-full md:w-[45%] group relative glass rounded-2xl transition-all duration-500 hover:-translate-y-2 hover:bg-white/10 z-10 block">
+                  <div
+                    className="absolute top-0 left-0 w-full h-1 rounded-t-2xl"
+                    style={{ background: gradientStyle }}
+                  />
+
+                  <div className="p-6 md:p-8">
+                    <div className="mb-6">
+                      <div className="text-sm font-mono text-white/40 font-bold mb-2">
+                        {item.date}
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-bold text-white transition-all">
                         {item.name}
                       </h2>
                     </div>
-                    <div className="text-2xl font-bold text-white/20 font-mono">
-                      {item.date}
+
+                    <p className="text-gray-300 mb-8 line-clamp-3 text-sm md:text-base">
+                      {item.description}
+                    </p>
+
+                    <div className="flex items-center gap-4 pt-6">
+                      <span className="flex items-center gap-2 text-sm font-bold text-white group-hover:gap-3 transition-all">
+                        Подробнее <ArrowRight className="w-4 h-4" />
+                      </span>
+                      <div className="flex-grow" />
+                      <Map className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
+                      <Calendar className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
                     </div>
                   </div>
+                </Link>
 
-                  <p className="text-gray-300 mb-8 line-clamp-3 text-sm md:text-base">
-                    {item.description}
-                  </p>
+                {/* Center Dot (Desktop only) */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black border-2 border-white/50 z-20 hidden md:block shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
 
-                  <div className="flex items-center gap-4 pt-6">
-                    <span className="flex items-center gap-2 text-sm font-bold text-white group-hover:gap-3 transition-all">
-                      Подробнее <ArrowRight className="w-4 h-4" />
-                    </span>
-                    <div className="flex-grow" />
-                    <Map className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
-                    <Calendar className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
-                  </div>
-                </div>
-              </Link>
+                {/* Empty Space for Zigzag Balance */}
+                <div className="w-full md:w-[45%] hidden md:block" />
 
-              {/* Center Dot (Desktop only) */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-black border-2 border-white/50 z-20 hidden md:block shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
-
-              {/* Empty Space for Zigzag Balance */}
-              <div className="w-full md:w-[45%] hidden md:block" />
-
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
       </div>
     </Layout>
