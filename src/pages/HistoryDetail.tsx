@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Monitor, Clock, Hourglass, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import Loader from '../components/ui/Loader';
 
 interface PhotoObject {
     id: number;
@@ -305,6 +306,7 @@ const HistoryDetail = () => {
     const { id } = useParams<{ id: string }>();
     const [details, setDetails] = useState<HistoryDetails | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isExiting, setIsExiting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [folderName, setFolderName] = useState<string>('');
 
@@ -333,7 +335,10 @@ const HistoryDetail = () => {
                 console.error(err);
                 setError('Failed to load history details.');
             } finally {
-                setLoading(false);
+                setIsExiting(true);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 500);
             }
         };
 
@@ -343,8 +348,8 @@ const HistoryDetail = () => {
     if (loading) {
         return (
             <Layout>
-                <div className="min-h-screen flex items-center justify-center">
-                    <div className="text-white text-xl">Загрузка...</div>
+                <div className={`min-h-screen flex items-center justify-center transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
+                    <Loader />
                 </div>
             </Layout>
         );

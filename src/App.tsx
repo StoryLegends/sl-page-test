@@ -1,4 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
+import SeasonalEffects from './components/SeasonalEffects';
+import GoogleAnalytics from './components/GoogleAnalytics';
+import CookieBanner from './components/CookieBanner';
+import './App.css';
+
 import Main from './pages/Main';
 import About from './pages/About';
 import Rules from './pages/Rules';
@@ -7,12 +13,7 @@ import HistoryDetail from './pages/HistoryDetail';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import UserAgreement from './pages/UserAgreement';
 import Licenses from './pages/Licenses';
-import ScrollToTop from './components/ScrollToTop';
-import SeasonalEffects from './components/SeasonalEffects';
 import NotFound from './pages/NotFound';
-import GoogleAnalytics from './components/GoogleAnalytics';
-import CookieBanner from './components/CookieBanner';
-import './App.css';
 
 function App() {
   return (

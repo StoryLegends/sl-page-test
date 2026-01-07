@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Clock, Calendar, Map, ArrowRight } from 'lucide-react';
+import Loader from '../components/ui/Loader';
 
 interface HistoryItem {
   id: string;
@@ -16,6 +17,7 @@ interface HistoryItem {
 const History = () => {
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -28,7 +30,10 @@ const History = () => {
       } catch (error) {
         console.error('Failed to load history index', error);
       } finally {
-        setLoading(false);
+        setIsExiting(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       }
     };
 
@@ -38,8 +43,8 @@ const History = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-white text-xl">Загрузка...</div>
+        <div className={`min-h-screen flex items-center justify-center transition-opacity duration-500 ${isExiting ? 'opacity-0' : 'opacity-100'}`}>
+          <Loader />
         </div>
       </Layout>
     );
@@ -75,7 +80,7 @@ const History = () => {
                 } flex-col gap-8 md:gap-0`}>
 
                 {/* Content Card */}
-                <Link to={`/history/${item.id}`} className="w-full md:w-[45%] group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl transition-all duration-500 hover:-translate-y-2 hover:bg-white/10 z-10 block">
+                <Link to={`/history/${item.id}`} className="w-full md:w-[45%] group relative bg-[#111]/90 ring-1 ring-inset ring-white/10 rounded-2xl overflow-hidden transition-transform duration-500 hover:-translate-y-2 hover:bg-[#1a1a1a] z-10 block">
                   <div
                     className="absolute top-0 left-0 w-full h-1 rounded-t-2xl"
                     style={{ background: gradientStyle }}

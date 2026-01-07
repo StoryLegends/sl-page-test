@@ -20,15 +20,20 @@ const UserAgreement = () => {
 
                         <section>
                             <h2 className="text-2xl font-bold text-white mb-4">2. Заявка и Правила сервера</h2>
-                            <p>
-                                Подача заявки на вступление в сервер StoryLegends осуществляется через сторонний сервис (Google Forms).
-                            </p>
-                            <p className="mt-2 font-bold">
-                                При подаче заявки вы автоматически соглашаетесь с правилами игрового сервера!
-                            </p>
-                            <p className="mt-1">
-                                Наличие аккаунта в Discord и присутствие на Discord-сервере проекта является обязательным условием для рассмотрения заявки.
-                            </p>
+                            <ul className="list-disc pl-6 space-y-2">
+                                <li>
+                                    Подача заявки на вступление в сервер StoryLegends осуществляется через сторонний сервис (Google Forms).
+                                </li>
+                                <li className="font-bold">
+                                    При подаче заявки вы автоматически соглашаетесь с правилами игрового сервера!
+                                </li>
+                                <li>
+                                    Наличие аккаунта в Discord и присутствие на Discord-сервере проекта является обязательным условием для рассмотрения заявки.
+                                </li>
+                                <li>
+                                    При использовании сервера вы соглашаетесь с условиями лицензий, которые находятся по <a href="/licenses" target="_blank" rel="noopener noreferrer" className="text-story-gold hover:underline">ссылке</a>.
+                                </li>
+                            </ul>
                         </section>
 
                         <section>
@@ -42,12 +47,14 @@ const UserAgreement = () => {
 
                         <section>
                             <h2 className="text-2xl font-bold text-white mb-4">4. Отказ от ответственности</h2>
-                            <p>
-                                Администрация не несет ответственности за любой ущерб, возникший вследствие использования данного сайта. Материалы предоставляются "как есть".
-                            </p>
-                            <p className="mt-2">
-                                StoryLegends не является официальным продуктом Minecraft. Мы не связаны с Mojang Studios.
-                            </p>
+                            <ul className="list-disc pl-6 space-y-2">
+                                <li>
+                                    Администрация не несет ответственности за любой ущерб, возникший вследствие использования данного сайта. Материалы предоставляются "как есть".
+                                </li>
+                                <li>
+                                    StoryLegends не является официальным продуктом Minecraft. Мы не связаны с Mojang Studios.
+                                </li>
+                            </ul>
                         </section>
 
                         <section>
