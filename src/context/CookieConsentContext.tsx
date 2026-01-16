@@ -23,25 +23,37 @@ export const CookieConsentProvider: React.FC<{ children: React.ReactNode }> = ({
     const [bannerVisible, setBannerVisible] = useState(false);
 
     useEffect(() => {
-        const storedConsent = localStorage.getItem(STORAGE_KEY);
-        if (storedConsent) {
-            try {
-                setConsent(JSON.parse(storedConsent));
-                setBannerVisible(false);
-            } catch (e) {
-                console.error("Failed to parse cookie consent", e);
-                // If parsing fails, reset
-                localStorage.removeItem(STORAGE_KEY);
+        try {
+            const storedConsent = localStorage.getItem(STORAGE_KEY);
+            if (storedConsent) {
+                try {
+                    setConsent(JSON.parse(storedConsent));
+                    setBannerVisible(false);
+                } catch (e) {
+                    console.error("Failed to parse cookie consent", e);
+                    // If parsing fails, try to reset
+                    try { localStorage.removeItem(STORAGE_KEY); } catch (err) { /* ignore */ }
+                    setBannerVisible(true);
+                }
+            } else {
                 setBannerVisible(true);
             }
-        } else {
+        } catch (e) {
+            console.warn("LocalStorage access denied or unavailable", e);
+            // If we can't read storage, we probably should show the banner or default to denied?
+            // Usually showing the banner is safer, but if storage is blocked, we can't save the choice anyway.
+            // Let's assume we show it for now, or maybe just proceed with defaults.
             setBannerVisible(true);
         }
     }, []);
 
     const saveConsent = (settings: ConsentSettings) => {
         setConsent(settings);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+        } catch (e) {
+            console.warn("Failed to save consent to LocalStorage", e);
+        }
         setBannerVisible(false);
     };
 

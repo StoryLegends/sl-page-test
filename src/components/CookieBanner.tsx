@@ -33,10 +33,10 @@ const CookieBanner: React.FC = () => {
             <AnimatePresence>
                 {bannerVisible && (
                     <motion.div
-                        initial={{ y: 100 }}
+                        initial={{ y: "100%" }}
                         animate={{ y: 0 }}
-                        exit={{ y: 100 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        exit={{ y: "100%" }}
+                        transition={{ duration: 0.5, ease: "easeInOut" }}
                         className="fixed bottom-0 left-0 right-0 z-[100] bg-[#111] border-t-4 border-[#333] shadow-[0_-4px_20px_rgba(0,0,0,0.8)]"
                     >
                         {/* Main Container */}
