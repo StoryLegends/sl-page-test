@@ -2,69 +2,58 @@
     "Legends": [
         {
             "name": "Mr. Yan",
-            "image": "lendspele.webp",
-            "description": "Creator of the first story",
-            "links": [
-                {
-                    "name": "YouTube",
-                    "url": "https://youtube.com/1234567890"
-                },
-                {
-                    "name": "Twitch",
-                    "url": "https://twitch.tv/1234567890"
-                }
-            ],
-            "Discrod": "https://discord.com/users/1234567890"
+            "image": "yan.webp",
+            "description": "Создатель всей истории серверов."
         },
         {
             "name": "LendSpele",
             "image": "lendspele.webp",
-            "description": "Legend",
+            "description": "Перенял сервер, держит его дальше.",
             "links": [
                 {
                     "name": "YouTube",
-                    "url": "https://youtube.com/1234567890"
-                },
-                {
-                    "name": "Twitch",
-                    "url": "https://twitch.tv/1234567890"
+                    "url": "https://www.youtube.com/@StoryLegends77"
                 }
             ],
-            "Discrod": "https://discord.com/users/1234567890"
+            "Discrod": "lendspele_"
         },
         {
-            "name": "datapeice",
-            "image": "lendspele.webp",
-            "description": "Find Polish alt-girl for him plzz...",
+            "name": "SevenElvn",
+            "image": "sevenelvn.webp",
+            "description": "Легенда 711, активит на сервере и делает всякие интересные вещи.",
             "links": [
                 {
                     "name": "YouTube",
-                    "url": "https://youtube.com/1234567890"
-                },
-                {
-                    "name": "Twitch",
-                    "url": "https://twitch.tv/1234567890"
+                    "url": "https://www.youtube.com/@SevenElvn711"
                 }
             ],
-            "Discrod": "https://discord.com/users/1234567890"
+            "Discrod": "7il777"
+        },
+        {
+            "name": "Yap_s",
+            "image": "yaps.webp",
+            "description": "Котик мур мяу, старый игрок.",
+            "links": [
+                {
+                    "name": "YouTube",
+                    "url": "https://www.youtube.com/@Yaps_Games"
+                }
+            ],
+            "Discrod": "yappy_yaps"
         }
     ],
     "ContenMakers": [
         {
-            "name": "Zhartan",
-            "image": "lendspele.webp",
-            "description": "Femboy ultra cat",
+            "name": "SevenElvn",
+            "image": "sevenelvn.webp",
+            "description": "Стример, создатель контента для сервера.",
             "links": [
                 {
                     "name": "YouTube",
-                    "url": "https://youtube.com/1234567890"
-                },
-                {
-                    "name": "Twitch",
-                    "url": "https://twitch.tv/1234567890"
+                    "url": "https://www.youtube.com/@SevenElvn711"
                 }
             ],
-            "Discrod": "https://discord.com/users/1234567890"
+            "Discrod": "7il777"
         }
     ]
 }
