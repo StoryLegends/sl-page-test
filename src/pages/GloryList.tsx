@@ -282,12 +282,14 @@ const GloryList = () => {
 
                     return (
                         <div key={sectionKey} className="mb-20">
-                            <div className="flex items-center gap-4 mb-10 justify-center">
-                                <Icon className={`w-8 h-8 ${theme.color}`} />
-                                <h2 className="text-3xl md:text-4xl font-bold text-white relative">
-                                    {title}
+                            <div className="mb-10 text-center">
+                                <div className="relative inline-flex items-center gap-4">
+                                    <Icon className={`w-8 h-8 ${theme.color}`} />
+                                    <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                        {title}
+                                    </h2>
                                     <div className={`absolute -bottom-4 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent ${theme.gradientMiddle} to-transparent opacity-50`} />
-                                </h2>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">

@@ -1,7 +1,7 @@
 import Layout from '../components/Layout';
 import CTASection from '../components/CTASection';
 import { Link } from 'react-router-dom';
-import { Users, Video, Trophy, Crown, Code, Megaphone, ChevronLeft, ChevronRight, Gavel, ArrowRight } from 'lucide-react';
+import { Users, Video, Trophy, Crown, Code, ChevronLeft, ChevronRight, Gavel, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const About = () => {
@@ -164,7 +164,7 @@ const About = () => {
         {/* Administration Section */}
         <div className="mb-16 relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">Состав администрации</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* LendSpele */}
             <div className="p-6 rounded-2xl bg-gradient-to-br from-purple-900/20 to-black border border-purple-500/30 backdrop-blur-sm text-center group hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full items-center">
               <div className="relative mb-4 h-48 flex items-center justify-center">
@@ -228,26 +228,7 @@ const About = () => {
               </div>
             </div>
 
-            {/* Slides_GG */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-blue-900/20 to-black border border-blue-500/30 backdrop-blur-sm text-center group hover:-translate-y-2 transition-transform duration-300 flex flex-col h-full items-center">
-              <div className="relative mb-4 h-48 flex items-center justify-center">
-                <img
-                  src="/images/slides.webp"
-                  alt="Slides_GG"
-                  className="h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
-                  style={{ maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' }}
-                />
-              </div>
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/50">
-                <Megaphone className="w-6 h-6 text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold text-blue-400 mb-1">Slides_GG</h3>
-              <p className="text-white font-semibold text-sm mb-2">Рекламный менеджер</p>
-              <p className="text-gray-400 text-xs mb-3">Занимается продвижением сервера</p>
-              <div className="inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-mono mt-auto">
-                slides_1
-              </div>
-            </div>
+
           </div>
         </div>
 

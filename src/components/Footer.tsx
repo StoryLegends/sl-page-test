@@ -14,6 +14,9 @@ const Footer: React.FC = () => {
             <a href="https://discord.com/invite/2RxxMnr6X9" target="_blank" rel="noopener noreferrer" className="px-6 py-2 rounded-lg bg-[#5865F2]/10 border border-[#5865F2]/20 text-[#5865F2] hover:bg-[#5865F2]/20 transition-all hover:scale-105">
               Discord
             </a>
+            <a href="https://t.me/lendspelelogs" target="_blank" rel="noopener noreferrer" className="px-6 py-2 rounded-lg bg-[#229ED9]/10 border border-[#229ED9]/20 text-[#229ED9] hover:bg-[#229ED9]/20 transition-all hover:scale-105">
+              Telegram
+            </a>
           </div>
         </div>
       </div>
