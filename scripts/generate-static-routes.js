@@ -95,9 +95,10 @@ function generateStaticRoutes() {
         // Replace Description
         routeContent = routeContent.replace(new RegExp(`content="${defaultDescription}"`, 'g'), `content="${route.description}"`);
 
-        // Replace URL
+        // Replace URL - escape dots in defaultUrl for regex
+        const escapedDefaultUrl = defaultUrl.replace(/\./g, '\\.');
         const routeUrl = `${defaultUrl}${route.path}`;
-        routeContent = routeContent.replace(new RegExp(`content="${defaultUrl}"`, 'g'), `content="${routeUrl}"`);
+        routeContent = routeContent.replace(new RegExp(`content="${escapedDefaultUrl}"`, 'g'), `content="${routeUrl}"`);
 
         // Replace global Image if specified for the route
         if (route.image) {

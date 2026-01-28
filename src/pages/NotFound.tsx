@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, AlertTriangle, Compass } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const NotFound: React.FC = () => {
     const [displayText, setDisplayText] = React.useState('d3s');
@@ -80,6 +81,14 @@ const NotFound: React.FC = () => {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-[#050505] text-white">
+            <Helmet>
+                <title>Страница не найдена - StoryLegends</title>
+                <meta name="description" content="Кажется вы заблудились..." />
+                <meta property="og:title" content="Страница не найдена - StoryLegends" />
+                <meta property="og:description" content="Кажется вы заблудились..." />
+                <meta property="og:image" content="https://www.storylegends.xyz/images/saul.webp" />
+                <meta name="twitter:image" content="https://www.storylegends.xyz/images/saul.webp" />
+            </Helmet>
             {/* Background Glitch Effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] animate-pulse" />

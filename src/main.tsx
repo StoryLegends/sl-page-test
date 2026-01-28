@@ -2,12 +2,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { HelmetProvider } from 'react-helmet-async'
 import { CookieConsentProvider } from './context/CookieConsentContext'
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CookieConsentProvider>
-      <App />
-    </CookieConsentProvider>
+    <HelmetProvider>
+      <CookieConsentProvider>
+        <App />
+      </CookieConsentProvider>
+    </HelmetProvider>
   </StrictMode>,
 )
