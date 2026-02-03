@@ -7,7 +7,8 @@ import CookieBanner from './components/CookieBanner';
 import Loader from './components/ui/Loader';
 import './App.css';
 
-const Main = lazy(() => import('./pages/Main'));
+import Main from './pages/Main';
+
 const About = lazy(() => import('./pages/About'));
 const Rules = lazy(() => import('./pages/Rules'));
 const History = lazy(() => import('./pages/History'));
