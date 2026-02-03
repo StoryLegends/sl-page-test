@@ -1,8 +1,13 @@
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 
 const Licenses = () => {
     return (
         <Layout>
+            <SEO
+                title="Лицензии"
+                description="Информация о лицензиях на моды SLcamera, SLbase и авторском контенте сервера StoryLegends."
+            />
             <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-12">Licenses</h1>
 

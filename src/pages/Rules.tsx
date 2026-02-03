@@ -1,10 +1,15 @@
 
 import Layout from '../components/Layout';
 import { FileSignature, Book, Gavel, MessageSquare, Map, AlertTriangle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Rules = () => {
   return (
     <Layout>
+      <SEO
+        title="Правила"
+        description="Актуальный свод правил и рекомендаций сервера StoryLegends. Ознакомьтесь перед игрой!"
+      />
       <div className="pt-24 pb-12 px-4 max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 relative">

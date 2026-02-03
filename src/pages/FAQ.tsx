@@ -2,10 +2,15 @@
 import Layout from '../components/Layout';
 import { HelpCircle, Info, Link as LinkIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const FAQ = () => {
     return (
         <Layout>
+            <SEO
+                title="FAQ / ЧЗВ"
+                description="Ответы на часто задаваемые вопросы о сервере StoryLegends. Как начать играть, правила, моды и решение проблем."
+            />
             <div className="pt-24 pb-12 px-4 max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-16 relative">

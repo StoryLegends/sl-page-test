@@ -1,9 +1,14 @@
 import Layout from '../components/Layout';
 import GlassCard from '../components/ui/GlassCard';
+import SEO from '../components/SEO';
 
 const UserAgreement = () => {
     return (
         <Layout>
+            <SEO
+                title="Пользовательское соглашение"
+                description="Условия использования сайта, правила подачи заявок и соглашение для игроков StoryLegends."
+            />
             <div className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto relative z-10">
                 <h1 className="text-4xl md:text-5xl font-bold text-white mb-8 font-minecraft text-center">
                     Пользовательское соглашение

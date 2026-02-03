@@ -5,6 +5,7 @@ import { Crown, Youtube, Twitch, Trophy, Gamepad2, ChevronLeft, X, ExternalLink 
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../components/SEO';
 
 const DiscordIcon = ({ className }: { className?: string }) => (
     <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -247,6 +248,10 @@ const GloryList = () => {
 
     return (
         <Layout>
+            <SEO
+                title="Зал Славы"
+                description="Легендарные игроки и создатели контента сервера StoryLegends. Зал Славы тех, кто вошел в историю."
+            />
             <div className="pt-24 pb-12 px-4 max-w-7xl mx-auto relative">
                 {/* Back Button */}
                 <div className="absolute top-24 left-4 md:left-0 md:top-24 z-10">

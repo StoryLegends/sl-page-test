@@ -3,6 +3,7 @@ import CTASection from '../components/CTASection';
 import { Link } from 'react-router-dom';
 import { Users, Video, Trophy, Crown, Code, ChevronLeft, ChevronRight, Gavel, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import SEO from '../components/SEO';
 
 const About = () => {
   // Load images dynamically from src/assets/gallery
@@ -37,6 +38,10 @@ const About = () => {
 
   return (
     <Layout>
+      <SEO
+        title="О сервере"
+        description="Узнайте больше о мире StoryLegends, нашем сообществе и особенностях бесплатного ванильного сервера Minecraft."
+      />
       <div className="pt-24 pb-12 px-4 max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16 relative">

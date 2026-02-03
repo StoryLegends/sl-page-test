@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Monitor, Clock, Hourglass, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import Loader from '../components/ui/Loader';
+import SEO from '../components/SEO';
 
 interface PhotoObject {
     id: number;
@@ -372,6 +373,10 @@ const HistoryDetail = () => {
 
     return (
         <Layout>
+            <SEO
+                title={details.name}
+                description={details.description.slice(0, 160)}
+            />
             <div className="pt-20 lg:pt-24 pb-8 lg:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
                 <Link
                     to="/history"

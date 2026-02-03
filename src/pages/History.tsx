@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Clock, Calendar, Map, ArrowRight } from 'lucide-react';
 import Loader from '../components/ui/Loader';
+import SEO from '../components/SEO';
 
 interface HistoryItem {
   id: string;
@@ -52,6 +53,10 @@ const History = () => {
 
   return (
     <Layout>
+      <SEO
+        title="История"
+        description="Хроники сезонов и великие события сервера StoryLegends. Погрузитесь в прошлое нашего мира."
+      />
       <div className="pt-24 pb-12 px-4 max-w-7xl mx-auto overflow-hidden">
         {/* Header */}
         <div className="text-center mb-24 relative">

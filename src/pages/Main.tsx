@@ -2,10 +2,15 @@ import Hero from '../components/Hero';
 import Features from '../components/Features';
 import CTASection from '../components/CTASection';
 import Layout from '../components/Layout';
+import SEO from '../components/SEO';
 
 const Main = () => {
   return (
     <Layout>
+      <SEO
+        title="Главная"
+        description="StoryLegends - Бесплатный ванильный сервер Minecraft. Присоединяйся к нашему сообществу, строй, выживай и твори историю!"
+      />
       <Hero />
       <Features />
       <div className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
