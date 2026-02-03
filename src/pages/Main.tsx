@@ -3,6 +3,7 @@ import Features from '../components/Features';
 import CTASection from '../components/CTASection';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
+import SeasonStatus from '../components/SeasonStatus';
 
 const Main = () => {
   return (
@@ -13,6 +14,7 @@ const Main = () => {
       />
       <Hero />
       <Features />
+      <SeasonStatus />
       <div className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
         {/* How to Join Section */}
         <div className="mb-16 max-w-3xl mx-auto text-center relative z-20">
