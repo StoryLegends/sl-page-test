@@ -72,8 +72,8 @@ const SeasonStatus = () => {
                         {/* Icon Container - Square with glow */}
                         <div className={`relative group-hover:scale-110 transition-transform duration-500`}>
                             <div className={`absolute inset-0 ${config.bg} blur-xl rounded-2xl opacity-50`}></div>
-                            <div className={`relative p-5 rounded-2xl bg-black/40 border ${config.border} backdrop-blur-sm`}>
-                                <Icon className={`w-10 h-10 md:w-12 md:h-12 ${config.color} drop-shadow-[0_0_8px_currentColor]`} />
+                            <div className={`relative p-4 rounded-2xl bg-transparent border ${config.border} backdrop-blur-sm`}>
+                                <Icon className={`w-16 h-16 md:w-20 md:h-20 ${config.color} drop-shadow-[0_0_15px_currentColor]`} />
                             </div>
                         </div>
 
