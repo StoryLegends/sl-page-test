@@ -35,7 +35,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Как долго рассматривают заявку / Когда меня примут?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Заявки рассматриваются до 24 часов, бывают случаи, что до 48.
                             </div>
@@ -50,7 +50,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Как понять, что меня приняли / не приняли?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 После рассмотрения заявки вам напишет администратор и сообщит, что вы приняты. Если после срока рассмотрения вам не написали, то вы не приняты.
                             </div>
@@ -65,7 +65,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Где найти айпи / моды / версию?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Вся эта информация хранится в канале <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">#инфа</span> в категории сервера в дискорд. Пожалуйста, читайте всё внимательно и весь канал. Убедитесь, что у вас есть роль <span className="text-yellow-400 font-mono bg-yellow-400/10 px-1 rounded">@SL</span> и вашу заявку приняли.
                             </div>
@@ -80,7 +80,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Где найти мод?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Зависит какой. Если в канале <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">#инфа</span> сказано, что мод есть в сети, то вы можете найти его на популярных ресурсах по типу Modrinth / CurseForge. Приватные моды публикуются в тот же канал под лицензиями, читайте и соблюдайте их.
                             </div>
@@ -95,7 +95,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Меня не пускает на сервер с причиной … !
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Популярные причины:
                                 <ul className="list-none mt-4 space-y-4">
@@ -124,7 +124,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Что можно на сервере?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Читайте правила. <Link to="/rules" className="text-story-gold hover:underline inline-flex items-center gap-1">https://www.storylegends.xyz/rules <LinkIcon className="w-3 h-3" /></Link>. Если чего-то нет в правилах, напишите тех-админу проекта (lendspele_).
                             </div>
@@ -139,7 +139,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Какие механики есть на сервере и как их использовать?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Все механики кратко описаны в <span className="text-indigo-400 font-mono bg-indigo-500/10 px-1 rounded">#инфа</span>. Если вам что-то не ясно, то вы всегда можете спросить администрацию. Крафты узнаются на сервере, но если они уже изучены, вы можете спросить игроков.
                             </div>
@@ -154,7 +154,7 @@ const FAQ = () => {
                                 <span className="text-story-gold">В:</span>
                                 Кто админ сервера / рассматривает заявки?
                             </h3>
-                            <div className="text-gray-300 pl-8 border-l-2 border-white/10">
+                            <div className="text-gray-300 pl-8 border-l-2 border-white/10 group-hover:border-story-gold transition-colors duration-300">
                                 <span className="font-bold text-blue-400 mr-2">О:</span>
                                 Весь админ состав описан на странице “О сервере” <Link to="/about" className="text-story-gold hover:underline inline-flex items-center gap-1">(https://www.storylegends.xyz/about) <LinkIcon className="w-3 h-3" /></Link>.
                             </div>

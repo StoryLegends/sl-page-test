@@ -60,9 +60,6 @@ const SeasonStatus = () => {
 
                 <div className={`relative overflow-hidden rounded-[2rem] border ${config.border} bg-[#050505]/40 backdrop-blur-md shadow-2xl group`}>
 
-                    {/* Left Strip - Hover Effect */}
-                    <div className={`absolute left-0 top-0 bottom-0 w-1.5 bg-white/5 ${config.hoverColor} transition-colors duration-500`} />
-
                     {/* Inner Content */}
                     <div className="relative p-8 md:px-16 md:py-10 flex flex-col items-center text-center gap-6">
 
