@@ -60,13 +60,13 @@ const SeasonStatus = () => {
                     {/* Inner Content */}
                     <div className="relative p-8 md:px-16 md:py-10 flex flex-col items-center text-center gap-6">
 
-                        {/* Status Pill - Floating at top */}
-                        <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full ${config.badge} border ${config.border} backdrop-blur-md shadow-[0_0_15px_rgba(0,0,0,0.3)] mb-2`}>
-                            <span className="relative flex h-2.5 w-2.5">
+                        {/* Status Label - Glowing Text */}
+                        <div className={`inline-flex items-center gap-3 mb-4`}>
+                            <span className="relative flex h-3 w-3">
                                 <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${config.color.replace('text-', 'bg-')}`}></span>
-                                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${config.color.replace('text-', 'bg-')}`}></span>
+                                <span className={`relative inline-flex rounded-full h-3 w-3 ${config.color.replace('text-', 'bg-')}`}></span>
                             </span>
-                            <span className="text-sm font-bold uppercase tracking-widest">{config.header}</span>
+                            <span className={`text-xl font-bold uppercase tracking-widest ${config.color} drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]`}>{config.header}</span>
                         </div>
 
                         {/* Icon Container - Square with glow */}
