@@ -10,7 +10,8 @@ const StatusConfig = {
         glow: "bg-green-500/40",
         border: "border-green-500/30",
         badge: "bg-green-500/10 text-green-300",
-        ping: "bg-green-400"
+        ping: "bg-green-400",
+        hoverColor: "group-hover:bg-green-400"
     },
     closed: {
         icon: Lock,
@@ -19,7 +20,8 @@ const StatusConfig = {
         glow: "bg-red-500/40",
         border: "border-red-500/30",
         badge: "bg-red-500/10 text-red-300",
-        ping: "bg-red-400"
+        ping: "bg-red-400",
+        hoverColor: "group-hover:bg-red-400"
     },
     announced: {
         icon: Megaphone,
@@ -28,7 +30,8 @@ const StatusConfig = {
         glow: "bg-blue-500/40",
         border: "border-blue-500/30",
         badge: "bg-blue-500/10 text-blue-300",
-        ping: "bg-blue-400"
+        ping: "bg-blue-400",
+        hoverColor: "group-hover:bg-blue-400"
     },
     soon: {
         icon: Clock,
@@ -37,7 +40,8 @@ const StatusConfig = {
         glow: "bg-yellow-500/40",
         border: "border-yellow-500/30",
         badge: "bg-yellow-500/10 text-yellow-300",
-        ping: "bg-yellow-400"
+        ping: "bg-yellow-400",
+        hoverColor: "group-hover:bg-yellow-400"
     }
 };
 
@@ -55,6 +59,9 @@ const SeasonStatus = () => {
                 <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] ${config.glow} blur-[100px] pointer-events-none rounded-full transition-colors duration-500`} />
 
                 <div className={`relative overflow-hidden rounded-[2rem] border ${config.border} bg-[#050505]/40 backdrop-blur-md shadow-2xl group`}>
+
+                    {/* Left Strip - Hover Effect */}
+                    <div className={`absolute left-0 top-0 bottom-0 w-1.5 bg-white/5 ${config.hoverColor} transition-colors duration-500`} />
 
                     {/* Inner Content */}
                     <div className="relative p-8 md:px-16 md:py-10 flex flex-col items-center text-center gap-6">
