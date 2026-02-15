@@ -56,19 +56,8 @@
         }
     ],
     "ContenMakers": [
-        {
-            "name": "SevenElvn",
-            "image": "sevenelvn.webp",
-            "description": "Стример, создатель контента для сервера.",
-            "links": [
-                {
-                    "name": "YouTube",
-                    "url": "https://www.youtube.com/@SevenElvn711"
-                }
-            ],
-            "Discrod": "7il777",
-            "details": "Создает контент высочайшего качества, привлекая новых игроков и развлекая постоянных резидентов. Его стримы — это всегда событие."
-        }
+        {}
     ]
 
 }
+
