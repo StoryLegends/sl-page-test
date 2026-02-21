@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Youtube } from 'lucide-react';
+import { Menu, X, Youtube, Shield, User } from 'lucide-react';
 
 const DiscordIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -14,10 +14,13 @@ const TelegramIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+import { useAuth } from '../context/AuthContext';
+
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAdmin, logout } = useAuth();
 
   useEffect(() => {
     const sentinel = document.getElementById('nav-sentinel');
@@ -49,6 +52,10 @@ const Navbar: React.FC = () => {
     { name: 'FAQ', href: '/faq' },
     { name: 'История', href: '/history' },
   ];
+
+  navLinks.push({ name: 'Игроки', href: '/players' });
+
+
 
   const socialLinks = [
     { name: 'YouTube', url: 'https://www.youtube.com/@storylegends77', icon: Youtube, color: 'hover:text-[#FF0000]' },
@@ -114,21 +121,83 @@ const Navbar: React.FC = () => {
                   <social.icon className="w-5 h-5" />
                 </a>
               ))}
+
+              {user && isAdmin && (
+                <Link
+                  to="/admin"
+                  className="px-4 py-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 font-bold border border-red-500/30 rounded-lg transition-colors text-sm flex items-center gap-2"
+                >
+                  <Shield className="w-4 h-4" />
+                  ADMIN
+                </Link>
+              )}
+
+              {user ? (
+                <div className="relative group ml-2">
+                  <button className="flex items-center gap-2 text-white hover:text-story-gold transition-colors focus:outline-none">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-neutral-900 shadow-lg relative group-hover:ring-2 ring-story-gold/20 transition-all">
+                      {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt={user.username} className="avatar-img" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-story-gold to-story-gold-dark flex items-center justify-center text-black font-bold text-lg">
+                          {user.username.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                    <div className="p-2 space-y-1">
+                      <Link to="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors">
+                        Профиль
+                      </Link>
+                      <Link to="/application" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors">
+                        Мои заявки
+                      </Link>
+                      <button
+                        onClick={logout}
+                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors"
+                      >
+                        Выйти
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative group ml-4">
+                  <button className="flex items-center gap-2 text-white hover:text-story-gold transition-colors focus:outline-none">
+                    <div className="w-10 h-10 rounded-full bg-story-gold/10 flex items-center justify-center border border-story-gold/50 text-story-gold hover:bg-story-gold hover:text-black transition-all shadow-lg hover:shadow-story-gold/30">
+                      <User className="w-5 h-5" />
+                    </div>
+                  </button>
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-[#0a0a0a] border border-white/10 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                    <div className="p-2 space-y-1">
+                      <Link to="/login" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors">
+                        Войти
+                      </Link>
+                      <Link to="/register" className="block px-4 py-2 text-sm text-story-gold hover:bg-white/10 hover:text-white rounded-lg transition-colors font-bold">
+                        Регистрация
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          </div >
 
           {/* Mobile Menu Button (Hamburger) */}
-          <button
-            className={`md:hidden relative z-50 text-white p-2 focus:outline-none transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+          < button
+            className={`md:hidden relative z-50 text-white p-2 focus:outline-none transition-opacity duration-300 ${mobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`
+            }
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="w-6 h-6" />
-          </button>
-        </div>
-      </nav>
+          </button >
+        </div >
+      </nav >
 
       {/* Mobile Menu Backdrop */}
-      <div
+      < div
         className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] transition-opacity duration-300 md:hidden ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         onClick={() => setMobileMenuOpen(false)}
@@ -167,6 +236,17 @@ const Navbar: React.FC = () => {
               </Link>
             );
           })}
+
+          {!user && (
+            <>
+              <Link to="/login" className="text-xl font-bold text-gray-400 hover:text-white transition-colors">
+                Войти
+              </Link>
+              <Link to="/register" className="px-8 py-2 bg-story-gold/20 text-story-gold border border-story-gold/50 font-bold rounded-xl text-lg hover:bg-story-gold hover:text-black transition-all">
+                Регистрация
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Social Links */}

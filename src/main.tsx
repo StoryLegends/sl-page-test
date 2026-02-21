@@ -6,12 +6,16 @@ import { HelmetProvider } from 'react-helmet-async'
 import { CookieConsentProvider } from './context/CookieConsentContext'
 
 
+import { GoogleReCaptchaProvider } from 'react19-google-recaptcha-v3';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
-      <CookieConsentProvider>
-        <App />
-      </CookieConsentProvider>
+      <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}>
+        <CookieConsentProvider>
+          <App />
+        </CookieConsentProvider>
+      </GoogleReCaptchaProvider>
     </HelmetProvider>
   </StrictMode>,
 )
