@@ -48,7 +48,7 @@ const ResetPasswordPage = () => {
         setLoading(true);
 
         try {
-            await authApi.resetPassword({ token, password: passwords.newPassword });
+            await authApi.resetPassword({ token, newPassword: passwords.newPassword });
             setSuccess(true);
             setTimeout(() => {
                 navigate('/login');

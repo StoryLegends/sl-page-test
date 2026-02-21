@@ -17,7 +17,6 @@ const RegisterPage = () => {
     const { showNotification } = useNotification();
     const [error, setError] = useState('');
 
-    const [recaptchaToken, setRecaptchaToken] = useState('');
     const { executeRecaptcha } = useGoogleReCaptcha();
 
     const handleSubmit = async (e: React.FormEvent) => {
