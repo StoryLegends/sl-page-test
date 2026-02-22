@@ -178,6 +178,12 @@ const ApplicationPage = () => {
                                         <p className="mb-2">Вы не можете подавать новые заявки, так как ваш аккаунт заблокирован.</p>
                                         <p className="text-sm opacity-80"><strong className="text-red-100">Причина:</strong> {user.banReason}</p>
                                     </div>
+                                ) : user?.inSeason ? (
+                                    <div className="bg-blue-900/20 border border-blue-500/50 rounded-xl p-8 text-blue-200 text-center">
+                                        <div className="text-4xl mb-4">⌛</div>
+                                        <h3 className="text-xl font-bold text-blue-400 mb-2">Вердикт уже получен</h3>
+                                        <p className="text-blue-300">Вы уже получили вердикт (приняты или отказаны) в этом сезоне. Подайте новую заявку в следующем сезоне!</p>
+                                    </div>
                                 ) : !user?.emailVerified ? (
                                     <div className="bg-story-gold/10 border border-story-gold/30 rounded-xl p-8 text-center animate-fadeIn">
                                         <div className="w-16 h-16 bg-story-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -34,6 +34,10 @@ export interface SiteSettings {
 
 export const adminApi = {
     // Users
+    resetSeason: async (): Promise<void> => {
+        await apiClient.post('/api/admin/reset-season');
+    },
+
     getAllUsers: async (): Promise<User[]> => {
         const response = await apiClient.get('/api/admin/users');
         return response.data;

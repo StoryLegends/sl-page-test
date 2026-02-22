@@ -23,6 +23,7 @@ export interface User {
     totpEnabled: boolean;
     bio?: string | null;
     isPlayer: boolean;
+    inSeason: boolean;
     discordUserId?: string;
     badges?: Badge[];
     // Admin-only security fields

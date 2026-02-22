@@ -4,7 +4,7 @@ import { adminApi, applicationsApi, type User } from '../api';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { Users, FileText, Shield, Ban, Search, Filter, MoreVertical, Edit, Key, Trash2, X, Copy, Mail, CheckCircle2, XCircle, Settings, AlertCircle, History, Send, Database, Download, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, FileText, Shield, Ban, Search, Filter, MoreVertical, Edit, Key, Trash2, X, Copy, Mail, CheckCircle2, XCircle, Settings, AlertCircle, History, Send, Database, Download, Upload, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 
 const AdminDashboardPage = () => {
     const { user, isAdmin, isModerator } = useAuth();
@@ -108,13 +108,13 @@ const AdminDashboardPage = () => {
         </div>
     );
 
-    const BadgeWithTooltip = ({ badge, size = "md" }: { badge: any, size?: "sm" | "md" }) => (
+    const BadgeWithTooltip = ({ badge }: { badge: any }) => (
         <div className="group/badge relative flex items-center justify-center">
             <div
-                className={`flex items-center justify-center transition-all duration-300 hover:scale-120 active:scale-90 cursor-help ${size === "sm" ? "w-6 h-6" : "w-7 h-7"}`}
+                className="flex items-center justify-center transition-all duration-300 cursor-help w-6 h-6"
                 style={{ color: badge.color }}
             >
-                <div className={`${size === "sm" ? "w-4 h-4" : "w-5 h-5"} badge-icon`} dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
+                <div className="w-4 h-4 badge-icon" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
             </div>
             {/* Tooltip */}
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-wider text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity pointer-events-none z-[100] shadow-2xl">
@@ -388,6 +388,18 @@ const AdminDashboardPage = () => {
         }
     };
 
+    const handleResetSeason = async () => {
+        if (!confirm('ВНИМАНИЕ! Это действие сбросит статусы "сезона" у всех пользователей. Они снова получат возможность отправлять заявки. Продолжить?')) return;
+        try {
+            await adminApi.resetSeason();
+            alert('Сезон успешно сброшен!');
+            fetchData();
+        } catch (err) {
+            console.error('Failed to reset season', err);
+            alert('Ошибка при сбросе сезона');
+        }
+    };
+
     const handleUnban = async (id: number) => {
         if (!confirm('Разбанить пользователя?')) return;
         try {
@@ -656,9 +668,9 @@ const AdminDashboardPage = () => {
                                                             </div>
                                                         </td>
                                                         <td className="px-3 py-3">
-                                                            <div className="flex -space-x-1 hover:space-x-1 transition-all">
+                                                            <div className="flex -space-x-1 transition-all">
                                                                 {u.badges && u.badges.map((badge: any) => (
-                                                                    <BadgeWithTooltip key={badge.id} badge={badge} size="sm" />
+                                                                    <BadgeWithTooltip key={badge.id} badge={badge} />
                                                                 ))}
                                                             </div>
                                                         </td>
@@ -1079,6 +1091,17 @@ const AdminDashboardPage = () => {
                                                     enabled={siteSettings?.applicationsOpen}
                                                     onChange={() => handleUpdateSetting('applicationsOpen', !siteSettings.applicationsOpen)}
                                                 />
+
+                                                <div className="pt-4 border-t border-white/5 mt-4">
+                                                    <button
+                                                        onClick={handleResetSeason}
+                                                        className="w-full bg-red-600/20 hover:bg-red-600/40 text-red-500 hover:text-red-400 font-bold py-3 rounded-xl border border-red-500/30 transition-all shadow-lg flex items-center justify-center gap-2"
+                                                    >
+                                                        <RefreshCw className="w-5 h-5" />
+                                                        НОВЫЙ СЕЗОН (СБРОС ЗАЯВОК)
+                                                    </button>
+                                                    <p className="text-gray-500 text-[10px] mt-2 text-center">Сбрасывает статус сезона у всех пользователей, позволяя им отправлять новые заявки.</p>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -1742,7 +1765,7 @@ const AdminDashboardPage = () => {
                                                         </div>
                                                         <div className="flex flex-col gap-0.5">
                                                             <span className="text-xs text-gray-500 font-black uppercase tracking-widest opacity-60">Internal User ID:</span>
-                                                            <span className="text-xs text-gray-300 font-mono break-all">{currentApp.userId || '—'}</span>
+                                                            <span className="text-xs text-gray-300 font-mono break-all">{currentApp.user?.id || '—'}</span>
                                                         </div>
                                                         <div className="flex flex-col gap-0.5">
                                                             <span className="text-xs text-gray-500 font-black uppercase tracking-widest opacity-60">Submitted Date:</span>
