@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
+import { XCircle } from 'lucide-react';
 import { useGoogleReCaptcha } from 'react19-google-recaptcha-v3';
 import { useNotification } from '../context/NotificationContext';
 
@@ -16,28 +17,63 @@ const RegisterPage = () => {
     const navigate = useNavigate();
     const { showNotification } = useNotification();
     const [error, setError] = useState('');
+    const [settings, setSettings] = useState<any>(null);
+    const [settingsLoading, setSettingsLoading] = useState(true);
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await (await import('../api')).adminApi.getSettings();
+                setSettings(res);
+            } catch (err) {
+                console.error('Failed to fetch settings', err);
+            } finally {
+                setSettingsLoading(false);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
 
         if (!executeRecaptcha) {
-            showNotification('ReCAPTCHA не готова', 'error');
+            showNotification('reCAPTCHA не готова', 'error');
             return;
         }
 
         try {
+            console.log('Executing reCAPTCHA...');
             const token = await executeRecaptcha('register');
-            await register({ username, email, password, discordNickname, minecraftNickname, recaptchaToken: token });
+
+            if (!token) {
+                console.error('reCAPTCHA returned null or empty token');
+                showNotification('Не удалось получить токен безопасности', 'error');
+                return;
+            }
+
+            console.log('Registration attempt with token length:', token.length);
+            await register({
+                username,
+                email,
+                password,
+                discordNickname,
+                minecraftNickname,
+                recaptchaToken: token
+            });
+
             showNotification('Регистрация успешна! Проверьте ваш email.', 'success');
             navigate('/login');
         } catch (err: any) {
+            console.error('Registration error:', err.response?.data || err.message);
             const errorMsg = err.response?.data?.message || err.response?.data?.error || 'Registration failed.';
             setError(errorMsg);
             showNotification(errorMsg, 'error');
         }
-    };
+    }, [executeRecaptcha, username, email, password, discordNickname, minecraftNickname, register, navigate, showNotification]);
 
     return (
         <Layout>
@@ -55,85 +91,105 @@ const RegisterPage = () => {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="username">Имя пользователя</label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                    placeholder="Steve"
-                                    required
-                                />
+                        {settingsLoading ? (
+                            <div className="flex justify-center py-10">
+                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-story-gold"></div>
                             </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="email">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                    placeholder="steve@minecraft.com"
-                                    required
-                                />
+                        ) : settings && !settings.registrationOpen ? (
+                            <div className="text-center py-10">
+                                <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                                    <XCircle className="w-8 h-8 text-red-500" />
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-2">Регистрация закрыта</h3>
+                                <p className="text-gray-400">На данный момент регистрация новых пользователей временно приостановлена администрацией.</p>
+                                <button
+                                    onClick={() => navigate('/')}
+                                    className="mt-6 px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-colors border border-white/10"
+                                >
+                                    На главную
+                                </button>
                             </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="username">Имя пользователя</label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
+                                        placeholder="Steve"
+                                        required
+                                    />
+                                </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="discord">Discord Tag</label>
-                                <input
-                                    type="text"
-                                    id="discord"
-                                    value={discordNickname}
-                                    onChange={(e) => setDiscordNickname(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                    placeholder="user#1234"
-                                    required
-                                />
-                            </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="email">Email</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
+                                        placeholder="steve@minecraft.com"
+                                        required
+                                    />
+                                </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="minecraft">Minecraft Nickname</label>
-                                <input
-                                    type="text"
-                                    id="minecraft"
-                                    value={minecraftNickname}
-                                    onChange={(e) => setMinecraftNickname(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                    placeholder="Steve"
-                                    required
-                                />
-                            </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="discord">Discord Tag</label>
+                                    <input
+                                        type="text"
+                                        id="discord"
+                                        value={discordNickname}
+                                        onChange={(e) => setDiscordNickname(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
+                                        placeholder="user#1234"
+                                        required
+                                    />
+                                </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="password">Пароль</label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                    placeholder="••••••••"
-                                    required
-                                />
-                            </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="minecraft">Minecraft Nickname</label>
+                                    <input
+                                        type="text"
+                                        id="minecraft"
+                                        value={minecraftNickname}
+                                        onChange={(e) => setMinecraftNickname(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
+                                        placeholder="Steve"
+                                        required
+                                    />
+                                </div>
 
-                            <button
-                                type="submit"
-                                className="w-full bg-gradient-to-r from-story-gold to-story-gold-dark hover:from-story-gold-light hover:to-story-gold text-black font-bold py-3.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-story-gold/20 mt-4"
-                            >
-                                Создать аккаунт
-                            </button>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="password">Пароль</label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
+                                        placeholder="••••••••"
+                                        required
+                                    />
+                                </div>
 
-                            <div className="text-[10px] text-gray-500 text-center mt-3">
-                                This site is protected by reCAPTCHA and the Google{' '}
-                                <a href="https://policies.google.com/privacy" className="text-gray-400 hover:text-white" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and{' '}
-                                <a href="https://policies.google.com/terms" className="text-gray-400 hover:text-white" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
-                            </div>
-                        </form>
+                                <button
+                                    type="submit"
+                                    className="w-full bg-gradient-to-r from-story-gold to-story-gold-dark hover:from-story-gold-light hover:to-story-gold text-black font-bold py-3.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-story-gold/20 mt-4"
+                                >
+                                    Создать аккаунт
+                                </button>
+
+                                <div className="text-[10px] text-gray-500 text-center mt-3">
+                                    This site is protected by reCAPTCHA and the Google{' '}
+                                    <a href="https://policies.google.com/privacy" className="text-gray-400 hover:text-white" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and{' '}
+                                    <a href="https://policies.google.com/terms" className="text-gray-400 hover:text-white" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
+                                </div>
+                            </form>
+                        )}
 
                         <p className="mt-6 text-center text-gray-400 text-sm">
                             Уже есть аккаунт? <a href="/login" className="text-story-gold hover:text-story-gold-light hover:underline transition-colors">Войти</a>

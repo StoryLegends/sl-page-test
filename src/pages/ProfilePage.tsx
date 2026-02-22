@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { usersApi, filesApi, totpApi, authApi } from '../api';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { User as UserIcon, Camera, Settings, Edit3 } from 'lucide-react';
+import { User as UserIcon, Camera, Settings, Edit3, ShieldCheck, Mail, ExternalLink, LogOut, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { applicationsApi, usersApi, filesApi, totpApi, authApi } from '../api';
 import { useNotification } from '../context/NotificationContext';
 
 const ProfilePage = () => {
@@ -34,6 +34,7 @@ const ProfilePage = () => {
 
     const [activeTab, setActiveTab] = useState<'profile' | 'settings'>('profile');
     const [isEditing, setIsEditing] = useState(false);
+    const [myApp, setMyApp] = useState<any>(null);
 
     useEffect(() => {
         if (user) {
@@ -49,15 +50,83 @@ const ProfilePage = () => {
                 setShowBanModal(true);
             }
         }
-    }, [user, isAdmin, navigate]);
+
+        // Handle Discord callback params
+        const params = new URLSearchParams(window.location.search);
+        const discordStatus = params.get('discord');
+
+        if (discordStatus) {
+            if (discordStatus === 'success') {
+                const name = params.get('discordName');
+                showNotification(`Discord ${name ? name : ''} успешно привязан!`, 'success');
+            } else if (discordStatus === 'already_connected') {
+                showNotification('Этот Discord аккаунт уже привязан к другому профилю.', 'warning');
+            } else if (discordStatus === 'error') {
+                const reason = params.get('reason');
+                const errorMap: Record<string, string> = {
+                    'discord_already_linked': 'Этот Discord аккаунт уже привязан к другому пользователю.',
+                    'discord_nickname_mismatch': 'Линк в Discord не совпадает с вашим текущим ником.',
+                    'token_exchange_failed': 'Не удалось связаться с Discord. Попробуйте позже.',
+                    'invalid_state': 'Ошибка сессии. Пожалуйста, попробуйте еще раз.',
+                    'user_not_found': 'Пользователь не найден.',
+                    'server_error': 'Ошибка сервера Discord. Попробуйте позже.'
+                };
+                showNotification(`Ошибка привязки: ${errorMap[reason || ''] || reason || 'неизвестная ошибка'}`, 'error');
+            }
+            // Clean up URL
+            navigate('/profile', { replace: true });
+        }
+        const fetchApps = async () => {
+            try {
+                const res = await applicationsApi.getMy();
+                setMyApp(res.current);
+            } catch (err) {
+                console.error('Failed to fetch my apps', err);
+            }
+        };
+
+        if (user) {
+            fetchApps();
+        }
+
+    }, [user, isAdmin, navigate, showNotification]);
+
+    const handleDiscordLink = async () => {
+        try {
+            const { url } = await authApi.discordAuthorize();
+            window.location.href = url;
+        } catch (err) {
+            console.error(err);
+            showNotification('Не удалось инициировать привязку Discord', 'error');
+        }
+    };
+
+    const handleDiscordDisconnect = async () => {
+        if (!confirm('Вы уверены, что хотите отвязать Discord? Вы не сможете подавать заявки до повторной привязки.')) return;
+        try {
+            await authApi.discordDisconnect();
+            showNotification('Discord успешно отвязан', 'success');
+            navigate(0);
+        } catch (err) {
+            console.error(err);
+            showNotification('Ошибка при отвязке Discord', 'error');
+        }
+    };
 
     const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (user?.discordVerified && formData.discordNickname !== user.discordNickname) {
+            if (!confirm('Изменение Discord ника приведет к сбросу верификации Discord. Вы уверены?')) {
+                return;
+            }
+        }
+
         try {
             await usersApi.updateMe(formData);
             setIsEditing(false);
             showNotification('Профиль успешно обновлен!', 'success');
-            // navigate(0); // Removing reload for better UX if possible, but keeping logic consistent
+            navigate(0);
         } catch (err: any) {
             console.error('Failed to update profile', err);
             const errorMsg = err.response?.data?.message || err.response?.data?.error || 'Не удалось обновить профиль.';
@@ -190,29 +259,29 @@ const ProfilePage = () => {
                                     {user.username}
                                 </h2>
 
-                                <div className="flex flex-wrap justify-center gap-2 mb-4">
-                                    <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase ${user.role === 'ROLE_ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}`}>
-                                        {user.role?.replace('ROLE_', '')}
-                                    </span>
+                                <div className="flex flex-wrap justify-center gap-1.5 mb-4">
                                     {user.badges && user.badges.map(badge => (
-                                        <div
-                                            key={badge.id}
-                                            className="px-2 py-0.5 rounded text-[10px] font-bold uppercase flex items-center gap-1.5 border"
-                                            style={{
-                                                backgroundColor: `${badge.color}15`,
-                                                color: badge.color,
-                                                borderColor: `${badge.color}30`
-                                            }}
-                                        >
-                                            <div className="w-3.5 h-3.5 badge-icon" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
-                                            {badge.name}
+                                        <div key={badge.id} className="group/badge relative flex items-center justify-center">
+                                            <div
+                                                className="w-8 h-8 flex items-center justify-center transition-all duration-300 hover:scale-120 active:scale-95 cursor-help"
+                                                style={{ color: badge.color }}
+                                            >
+                                                <div className="w-5 h-5 badge-icon" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
+                                            </div>
+                                            {/* Tooltip */}
+                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-wider text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity pointer-events-none z-[100] shadow-2xl">
+                                                {badge.name}
+                                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-black" />
+                                            </div>
                                         </div>
                                     ))}
-                                    {user.isPlayer && (
-                                        <span className="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-xs border border-green-500/20 font-bold uppercase">PLAYER</span>
-                                    )}
                                     {user.banned && <span className="bg-red-900/50 text-red-200 px-2 py-0.5 rounded text-xs border border-red-500/20 font-bold uppercase">BANNED</span>}
                                 </div>
+                                {user.banned && user.banReason && (
+                                    <p className="text-[10px] text-red-500/80 font-bold uppercase tracking-widest mt-2 px-4 leading-relaxed">
+                                        Причина: {user.banReason}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Navigation Tabs (Vertical on desktop) */}
@@ -232,6 +301,37 @@ const ProfilePage = () => {
                                     Настройки аккаунта
                                 </button>
                             </div>
+
+                            {/* Application Status Card */}
+                            {myApp && (
+                                <div className="bg-black/40 border border-white/10 rounded-2xl p-5 backdrop-blur-md shadow-xl animate-fadeIn">
+                                    <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 px-1">Статус заявки</h4>
+                                    <div className="bg-white/5 border border-white/5 rounded-xl p-4 space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${myApp.status === 'ACCEPTED' ? 'bg-green-500/20 text-green-400 border border-green-500/10' :
+                                                myApp.status === 'REJECTED' ? 'bg-red-500/20 text-red-400 border border-red-500/10' :
+                                                    'bg-yellow-500/20 text-yellow-400 border border-yellow-500/10'}`}>
+                                                {myApp.status === 'ACCEPTED' && <CheckCircle2 className="w-3 h-3" />}
+                                                {myApp.status === 'REJECTED' && <XCircle className="w-3 h-3" />}
+                                                {myApp.status === 'PENDING' && <Clock className="w-3 h-3" />}
+                                                {myApp.status || 'PENDING'}
+                                            </span>
+                                            <span className="text-[10px] text-gray-600 font-mono">#{String(myApp.id).slice(0, 8)}</span>
+                                        </div>
+                                        <p className="text-xs text-gray-400 leading-relaxed">
+                                            {myApp.status === 'ACCEPTED' ? 'Ваша заявка принята! Теперь вы имеете статус игрока.' :
+                                                myApp.status === 'REJECTED' ? 'К сожалению, ваша заявка была отклонена.' :
+                                                    'Ваша заявка находится на рассмотрении администрации.'}
+                                        </p>
+                                        <button
+                                            onClick={() => navigate('/apply')}
+                                            className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-[10px] font-bold uppercase tracking-wider text-gray-300 transition-all"
+                                        >
+                                            История заявок
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Main Content Area */}
@@ -253,16 +353,37 @@ const ProfilePage = () => {
                                             )}
                                         </div>
 
+                                        {/* Discord Verification Warning - Only show if NOT verified */}
+                                        {!user.discordVerified && (
+                                            <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fadeIn">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+                                                        <ShieldCheck className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-indigo-200 font-bold text-sm uppercase tracking-wider">Discord не привязан</h4>
+                                                        <p className="text-gray-400 text-xs">Привяжите Discord через OAuth2 для подачи заявок.</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={handleDiscordLink}
+                                                    className="px-4 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 text-sm font-bold rounded-lg border border-indigo-500/20 transition-all uppercase tracking-wider whitespace-nowrap flex items-center gap-2"
+                                                >
+                                                    Привязать Discord <ExternalLink className="w-3 h-3" />
+                                                </button>
+                                            </div>
+                                        )}
+
                                         {/* Email Verification Warning */}
                                         {!user.emailVerified && (
                                             <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fadeIn">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500">
-                                                        ⚠️
+                                                        <Mail className="w-5 h-5" />
                                                     </div>
                                                     <div>
                                                         <h4 className="text-yellow-200 font-bold text-sm uppercase tracking-wider">Email не подтвержден</h4>
-                                                        <p className="text-yellow-500/80 text-xs">Подтвердите почту для доступа ко всем функциям.</p>
+                                                        <p className="text-yellow-500/80 text-xs text-left">Подтвердите почту для доступа ко всем функциям.</p>
                                                     </div>
                                                 </div>
                                                 <button
@@ -329,17 +450,33 @@ const ProfilePage = () => {
                                                     </div>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                         <div>
-                                                            <label className="block text-sm font-medium text-gray-300 mb-2">Discord Tag</label>
+                                                            <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center justify-between">
+                                                                <span className="flex items-center gap-2">
+                                                                    <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" /> Discord Tag
+                                                                </span>
+                                                                {user.discordVerified && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={handleDiscordDisconnect}
+                                                                        className="text-[10px] text-red-400/80 hover:text-red-400 font-black uppercase tracking-widest flex items-center gap-1 transition-colors"
+                                                                    >
+                                                                        Отвязать <LogOut className="w-3 h-3" />
+                                                                    </button>
+                                                                )}
+                                                            </label>
                                                             <input
                                                                 type="text"
                                                                 value={formData.discordNickname}
                                                                 onChange={(e) => setFormData({ ...formData, discordNickname: e.target.value })}
-                                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white"
+                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.discordVerified ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="user#1234"
+                                                                disabled={user.discordVerified}
                                                             />
                                                         </div>
                                                         <div>
-                                                            <label className="block text-sm font-medium text-gray-300 mb-2">Minecraft Nickname</label>
+                                                            <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
+                                                                <Mail className="w-3.5 h-3.5 text-story-gold" /> Minecraft Nickname
+                                                            </label>
                                                             <input
                                                                 type="text"
                                                                 value={formData.minecraftNickname}

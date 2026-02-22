@@ -19,6 +19,7 @@ export interface User {
     banned: boolean;
     banReason?: string | null;
     emailVerified: boolean;
+    discordVerified: boolean;
     totpEnabled: boolean;
     bio?: string | null;
     isPlayer: boolean;
@@ -39,6 +40,8 @@ export interface UpdateProfileData {
     minecraftNickname?: string;
     avatarUrl?: string;
     bio?: string;
+    isPlayer?: boolean;
+    role?: string;
     oldPassword?: string;
     newPassword?: string;
 }
@@ -62,4 +65,3 @@ export const usersApi = {
         return response.data;
     },
 };
-

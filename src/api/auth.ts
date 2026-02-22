@@ -14,6 +14,7 @@ export interface LoginData {
     username: string;
     password: string;
     totpCode?: string;
+    recaptchaToken?: string;
 }
 
 export interface LoginResponse {
@@ -22,6 +23,7 @@ export interface LoginResponse {
     username: string;
     isPlayer: boolean;
     totpRequired?: boolean;
+    discordVerified?: boolean;
 }
 
 export interface RegisterResponse {
@@ -73,6 +75,22 @@ export const authApi = {
     // Set new password
     resetPassword: async (data: ResetPasswordData): Promise<{ message: string }> => {
         const response = await apiClient.post('/api/auth/reset-password', data);
+        return response.data;
+    },
+
+    // Discord OAuth2
+    discordAuthorize: async (): Promise<{ url: string }> => {
+        const response = await apiClient.get('/api/auth/discord/authorize');
+        return response.data;
+    },
+
+    discordConnect: async (code: string): Promise<{ status: string; discordUsername: string; discordId: string }> => {
+        const response = await apiClient.post('/api/auth/discord/connect', { code });
+        return response.data;
+    },
+
+    discordDisconnect: async (): Promise<{ status: string }> => {
+        const response = await apiClient.delete('/api/auth/discord/disconnect');
         return response.data;
     },
 };

@@ -36,7 +36,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     return (
         <NotificationContext.Provider value={{ showNotification }}>
             {children}
-            <div className="fixed top-24 right-4 z-[9999] flex flex-col gap-3 pointer-events-none max-w-md w-full sm:w-auto">
+            <div className="fixed top-12 right-4 z-[9999] flex flex-col gap-2.5 pointer-events-none max-w-md w-full sm:w-auto">
                 <AnimatePresence mode="popLayout">
                     {notifications.map((n) => (
                         <motion.div
@@ -48,52 +48,54 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
                             className="pointer-events-auto"
                         >
                             <div className={`
-                relative overflow-hidden
-                flex items-start gap-3 p-4 rounded-xl shadow-2xl backdrop-blur-md
-                border border-white/10
-                ${n.type === 'success' ? 'bg-green-500/10 text-green-400' :
-                                    n.type === 'error' ? 'bg-red-500/10 text-red-400' :
-                                        n.type === 'warning' ? 'bg-story-gold/10 text-story-gold' :
-                                            'bg-zinc-900/80 text-blue-400'}
-              `}>
-                                {/* Glow effect */}
-                                <div className={`absolute -inset-1 opacity-20 blur-xl rounded-full ${n.type === 'success' ? 'bg-green-500' :
-                                        n.type === 'error' ? 'bg-red-500' :
-                                            n.type === 'warning' ? 'bg-story-gold' :
-                                                'bg-blue-500'
+                                relative overflow-hidden
+                                flex items-start gap-3 p-3.5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl
+                                border
+                                ${n.type === 'success' ? 'bg-[#064e3b]/80 text-green-300 border-green-500/30' :
+                                    n.type === 'error' ? 'bg-[#7f1d1d]/80 text-red-300 border-red-500/30' :
+                                        n.type === 'warning' ? 'bg-[#78350f]/80 text-story-gold border-story-gold/30' :
+                                            'bg-[#1e1b4b]/80 text-blue-300 border-blue-500/30'}
+                            `}>
+                                {/* Inner glow */}
+                                <div className={`absolute -inset-1 opacity-10 blur-2xl rounded-full ${n.type === 'success' ? 'bg-green-500' :
+                                    n.type === 'error' ? 'bg-red-500' :
+                                        n.type === 'warning' ? 'bg-story-gold' :
+                                            'bg-blue-500'
                                     }`} />
 
-                                <div className="flex-shrink-0 mt-0.5">
-                                    {n.type === 'success' && <CheckCircle className="w-5 h-5" />}
-                                    {n.type === 'error' && <XCircle className="w-5 h-5" />}
-                                    {n.type === 'warning' && <AlertCircle className="w-5 h-5" />}
-                                    {n.type === 'info' && <Info className="w-5 h-5" />}
+                                <div className="flex-shrink-0 mt-0.5 relative z-10">
+                                    {n.type === 'success' && <CheckCircle className="w-5 h-5 text-green-400" />}
+                                    {n.type === 'error' && <XCircle className="w-5 h-5 text-red-400" />}
+                                    {n.type === 'warning' && <AlertCircle className="w-5 h-5 text-story-gold" />}
+                                    {n.type === 'info' && <Info className="w-5 h-5 text-blue-400" />}
                                 </div>
 
-                                <div className="flex-grow min-w-0 pr-6">
-                                    <p className="text-sm font-medium leading-relaxed break-words whitespace-pre-wrap">
+                                <div className="flex-grow min-w-0 pr-6 relative z-10">
+                                    <p className="text-sm font-semibold leading-relaxed break-words whitespace-pre-wrap tracking-wide">
                                         {n.message}
                                     </p>
                                 </div>
 
                                 <button
                                     onClick={() => removeNotification(n.id)}
-                                    className="flex-shrink-0 hover:opacity-70 transition-opacity ml-auto"
+                                    className="flex-shrink-0 hover:scale-110 transition-transform ml-auto relative z-20"
                                 >
-                                    <X className="w-4 h-4 opacity-50" />
+                                    <X className="w-4 h-4 opacity-40 hover:opacity-100 transition-opacity" />
                                 </button>
 
                                 {/* Progress bar */}
-                                <motion.div
-                                    initial={{ scaleX: 1 }}
-                                    animate={{ scaleX: 0 }}
-                                    transition={{ duration: 5, ease: 'linear' }}
-                                    className={`absolute bottom-0 left-0 h-1 origin-left w-full ${n.type === 'success' ? 'bg-green-500/30' :
-                                            n.type === 'error' ? 'bg-red-500/30' :
-                                                n.type === 'warning' ? 'bg-story-gold/30' :
-                                                    'bg-blue-500/30'
-                                        }`}
-                                />
+                                <div className="absolute bottom-0 left-0 w-full h-[3px] bg-black/20">
+                                    <motion.div
+                                        initial={{ scaleX: 1 }}
+                                        animate={{ scaleX: 0 }}
+                                        transition={{ duration: 5, ease: 'linear' }}
+                                        className={`h-full origin-left ${n.type === 'success' ? 'bg-green-400' :
+                                            n.type === 'error' ? 'bg-red-400' :
+                                                n.type === 'warning' ? 'bg-story-gold' :
+                                                    'bg-blue-400'
+                                            }`}
+                                    />
+                                </div>
                             </div>
                         </motion.div>
                     ))}

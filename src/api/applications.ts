@@ -16,6 +16,11 @@ export interface Application {
     user: User;
 }
 
+export interface MyApplicationsResponse {
+    current: Application | null;
+    history: Application[];
+}
+
 export interface ApplicationCreateData {
     firstName: string;
     lastName: string;
@@ -33,7 +38,7 @@ export const applicationsApi = {
         return response.data;
     },
 
-    getMy: async (): Promise<Application[]> => {
+    getMy: async (): Promise<MyApplicationsResponse> => {
         const response = await apiClient.get('/api/applications/my');
         return response.data;
     },

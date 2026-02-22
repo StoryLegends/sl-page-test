@@ -3,17 +3,18 @@ import { applicationsApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { ScrollText, Send, Clock, CheckCircle, XCircle, Mail } from 'lucide-react';
+import { ScrollText, Send, Clock, CheckCircle, XCircle, Mail, ShieldCheck } from 'lucide-react';
 import { useGoogleReCaptcha } from 'react19-google-recaptcha-v3';
 import { useNotification } from '../context/NotificationContext';
+import { useNavigate } from 'react-router-dom';
 
 const ApplicationPage = () => {
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const { showNotification } = useNotification();
+    const navigate = useNavigate();
     const [myApplications, setMyApplications] = useState<any[]>([]);
     const [expandedAppId, setExpandedAppId] = useState<string | null>(null);
 
-    // New form state
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -24,38 +25,40 @@ const ApplicationPage = () => {
         selfRating: 5
     });
 
+    const [settings, setSettings] = useState<any>(null);
+    const [settingsLoading, setSettingsLoading] = useState(true);
+
     useEffect(() => {
         fetchMyApplications();
+        fetchSettings();
     }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const res = await (await import('../api')).adminApi.getSettings();
+            setSettings(res);
+        } catch (err) {
+            console.error('Failed to fetch settings', err);
+        } finally {
+            setSettingsLoading(false);
+        }
+    };
 
     const fetchMyApplications = async () => {
         try {
             const res = await applicationsApi.getMy();
             console.log('API Response (my apps):', res);
 
-            let rawApps: any[] = [];
-            if (Array.isArray(res)) {
-                rawApps = res;
-            } else if (res && typeof res === 'object') {
-                if ('content' in res && Array.isArray((res as any).content)) {
-                    rawApps = (res as any).content;
-                } else if ('applications' in res && Array.isArray((res as any).applications)) {
-                    rawApps = (res as any).applications;
-                } else if (Object.keys(res).length > 0) {
-                    rawApps = [res];
-                }
+            // res now has { current, history } structure
+            const apps: any[] = [];
+            if (res.current) apps.push(res.current);
+            if (res.history && Array.isArray(res.history)) {
+                // Filter out current from history if duplicated, though backend should handle it
+                const history = res.history.filter(h => h.id !== res.current?.id);
+                apps.push(...history);
             }
 
-            // Keep all valid application objects
-            const validApps = rawApps.filter(app => app && typeof app === 'object' && app.id);
-
-            // Sort by date: newest first
-            const sortedApps = validApps.sort((a, b) =>
-                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            );
-
-            console.log('Final apps list for UI:', sortedApps);
-            setMyApplications(sortedApps);
+            setMyApplications(apps);
         } catch (err: any) {
             console.error('Failed to fetch applications', err);
         }
@@ -65,17 +68,27 @@ const ApplicationPage = () => {
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!executeRecaptcha) {
-            showNotification('ReCAPTCHA не готова', 'error');
+            showNotification('reCAPTCHA не готова', 'error');
             return;
         }
 
         try {
+            console.log('Executing reCAPTCHA for application...');
             const token = await executeRecaptcha('submit_application');
+
+            if (!token) {
+                console.error('reCAPTCHA returned null or empty token');
+                showNotification('Не удалось получить токен безопасности', 'error');
+                return;
+            }
+
+            console.log('Application submission attempt with token length:', token.length);
             await applicationsApi.create({ ...formData, recaptchaToken: token });
+
             setFormData({
                 firstName: '',
                 lastName: '',
@@ -85,6 +98,7 @@ const ApplicationPage = () => {
                 additionalInfo: '',
                 selfRating: 5
             });
+
             fetchMyApplications();
             showNotification('Заявка успешно отправлена!', 'success');
         } catch (err: any) {
@@ -97,14 +111,16 @@ const ApplicationPage = () => {
             } else if (data?.error) {
                 msg = data.error;
             } else if (Array.isArray(data?.errors)) {
-                msg = data.errors.map((e: any) => e.message || e).join('\n');
+                msg = data.errors.map((e: any) => e.message || e.defaultMessage || JSON.stringify(e)).join('\n');
+            } else if (typeof data === 'object') {
+                msg = JSON.stringify(data, null, 2);
             } else if (typeof data === 'string') {
                 msg = data;
             }
 
             showNotification(msg, 'error');
         }
-    };
+    }, [executeRecaptcha, formData, fetchMyApplications, showNotification]);
 
     return (
         <Layout>
@@ -127,7 +143,30 @@ const ApplicationPage = () => {
                                     Подать заявку
                                 </h2>
 
-                                {user?.banned ? (
+                                {authLoading || settingsLoading ? (
+                                    <div className="flex justify-center py-10">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white/20"></div>
+                                    </div>
+                                ) : !user ? (
+                                    <div className="bg-white/5 border border-white/5 rounded-xl p-8 text-center">
+                                        <h3 className="text-xl font-bold text-white mb-2">Авторизация</h3>
+                                        <p className="text-gray-400 mb-6">Войдите в аккаунт, чтобы подать заявку.</p>
+                                        <button
+                                            onClick={() => navigate('/login')}
+                                            className="px-6 py-2 bg-story-gold text-black text-sm font-bold rounded-xl hover:bg-white transition-all"
+                                        >
+                                            Войти
+                                        </button>
+                                    </div>
+                                ) : settings && !settings.applicationsOpen ? (
+                                    <div className="bg-white/5 border border-white/5 rounded-xl p-8 text-center animate-fadeIn">
+                                        <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
+                                            <XCircle className="w-8 h-8 text-gray-400" />
+                                        </div>
+                                        <h3 className="text-xl font-bold text-white mb-2">Заявки закрыты</h3>
+                                        <p className="text-gray-400 mb-0">Приём заявок временно приостановлен администрацией проекта.</p>
+                                    </div>
+                                ) : user?.banned ? (
                                     <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-4 text-red-200">
                                         <h3 className="text-lg font-bold flex items-center gap-2 mb-2 text-red-100">
                                             <span className="text-xl">⚠️</span> Доступ ограничен
@@ -147,6 +186,20 @@ const ApplicationPage = () => {
                                                 Письмо не пришло? Проверьте папку <strong>Спам</strong>.
                                             </div>
                                         </div>
+                                    </div>
+                                ) : !user?.discordVerified ? (
+                                    <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-8 text-center animate-fadeIn">
+                                        <div className="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <ShieldCheck className="w-8 h-8 text-indigo-400" />
+                                        </div>
+                                        <h3 className="text-xl font-bold text-indigo-400 mb-2">Подключите Discord</h3>
+                                        <p className="text-gray-300 mb-6">Для подачи заявки необходимо привязать ваш Discord аккаунт через OAuth2 в профиле.</p>
+                                        <button
+                                            onClick={() => navigate('/profile')}
+                                            className="px-6 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 text-sm font-bold rounded-xl border border-indigo-500/20 transition-all"
+                                        >
+                                            Перейти в профиль
+                                        </button>
                                     </div>
                                 ) : hasPendingApp ? (
                                     <div className="bg-story-gold/10 border border-story-gold/30 rounded-xl p-8 text-center">

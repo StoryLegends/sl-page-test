@@ -30,6 +30,7 @@ import ProfilePage from './pages/ProfilePage';
 import ApplicationPage from './pages/ApplicationPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import DiscordCallbackPage from './pages/DiscordCallbackPage';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 
@@ -61,6 +62,7 @@ function App() {
               <Route path="/verify-email" element={<EmailVerificationPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
+              <Route path="/auth/discord/callback" element={<DiscordCallbackPage />} />
 
               <Route path="/profile" element={
                 <ProtectedRoute>

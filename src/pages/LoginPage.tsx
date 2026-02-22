@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import { useNotification } from '../context/NotificationContext';
+import { useGoogleReCaptcha } from 'react19-google-recaptcha-v3';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -15,15 +16,39 @@ const LoginPage = () => {
     const { showNotification } = useNotification();
     const [error, setError] = useState('');
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const { executeRecaptcha } = useGoogleReCaptcha();
+
+    const handleSubmit = React.useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+
+        if (!executeRecaptcha) {
+            showNotification('reCAPTCHA не готова', 'error');
+            return;
+        }
+
         try {
-            await login({ username, password, totpCode: totpRequired ? totpCode : undefined });
+            console.log('Executing reCAPTCHA for login...');
+            const token = await executeRecaptcha('login');
+
+            if (!token) {
+                console.error('reCAPTCHA returned null or empty token');
+                showNotification('Не удалось получить токен безопасности', 'error');
+                return;
+            }
+
+            console.log('Login attempt with token length:', token.length);
+            await login({
+                username,
+                password,
+                totpCode: totpRequired ? totpCode : undefined,
+                recaptchaToken: token
+            });
+
             showNotification(`Добро пожаловать, ${username}!`, 'success');
             navigate('/profile');
         } catch (err: any) {
-            console.log('Login error:', err);
+            console.error('Login error:', err);
 
             if (err.totpRequired) {
                 setTotpRequired(true);
@@ -35,7 +60,7 @@ const LoginPage = () => {
             setError(errorMsg);
             showNotification(errorMsg, 'error');
         }
-    };
+    }, [executeRecaptcha, username, password, totpCode, totpRequired, login, navigate, showNotification]);
 
     return (
         <Layout>
@@ -114,6 +139,12 @@ const LoginPage = () => {
                             >
                                 {totpRequired ? 'Подтвердить' : 'Войти'}
                             </button>
+
+                            <div className="text-[10px] text-gray-500 text-center mt-3">
+                                This site is protected by reCAPTCHA and the Google{' '}
+                                <a href="https://policies.google.com/privacy" className="text-gray-400 hover:text-white" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and{' '}
+                                <a href="https://policies.google.com/terms" className="text-gray-400 hover:text-white" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
+                            </div>
                         </form>
 
                         <p className="mt-6 text-center text-gray-400 text-sm">

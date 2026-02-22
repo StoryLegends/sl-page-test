@@ -34,15 +34,14 @@ const PlayersPage = () => {
     return (
         <Layout>
             <SEO title="Игроки" description="Список игроков сервера" />
-            <div className="min-h-[80vh] pt-32 pb-20 px-4">
+            <div className="min-h-[80vh] pt-20 pb-8 px-4 text-left">
                 <div className="max-w-7xl mx-auto">
-
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-900/20">
-                                <Users className="w-6 h-6 text-white" />
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center shadow-lg shadow-blue-900/20">
+                                <Users className="w-5 h-5 text-white" />
                             </div>
-                            <h1 className="text-3xl md:text-4xl font-bold font-minecraft text-white">Список Игроков</h1>
+                            <h1 className="text-2xl md:text-3xl font-bold font-minecraft text-white">Список Игроков</h1>
                         </div>
 
                         <div className="relative w-full md:w-64">
@@ -85,25 +84,23 @@ const PlayersPage = () => {
                                             )}
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-white flex items-center gap-1.5 min-w-0 mb-1">
-                                                <span className="truncate">{user.username}</span>
-                                            </h3>
+                                            <div className="flex items-center gap-2 mb-1.5 min-w-0">
+                                                <h3 className="font-bold text-white text-lg truncate leading-none">{user.username}</h3>
+                                            </div>
                                             <div className="flex flex-wrap gap-1.5 items-center">
-                                                <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${user.role === 'ROLE_ADMIN' ? 'bg-red-500/20 text-red-300' : 'bg-blue-500/20 text-blue-300'}`}>
-                                                    {user.role === 'ROLE_ADMIN' ? 'Admin' : 'Player'}
-                                                </span>
                                                 {user.badges && user.badges.map(badge => (
-                                                    <div
-                                                        key={badge.id}
-                                                        className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase flex items-center gap-1 border"
-                                                        style={{
-                                                            backgroundColor: `${badge.color}15`,
-                                                            color: badge.color,
-                                                            borderColor: `${badge.color}30`
-                                                        }}
-                                                    >
-                                                        <div className="w-3 h-3 badge-icon" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
-                                                        {badge.name}
+                                                    <div key={badge.id} className="group/badge relative flex items-center justify-center">
+                                                        <div
+                                                            className="w-7 h-7 flex items-center justify-center transition-all duration-300 hover:scale-120 active:scale-90 cursor-help"
+                                                            style={{ color: badge.color }}
+                                                        >
+                                                            <div className="w-5 h-5 badge-icon" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
+                                                        </div>
+                                                        {/* Tooltip */}
+                                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#0a0a0a] border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-wider text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity pointer-events-none z-10 shadow-2xl">
+                                                            {badge.name}
+                                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-4 border-x-transparent border-t-4 border-t-[#0a0a0a]" />
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>

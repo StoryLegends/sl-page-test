@@ -8,6 +8,30 @@ export interface BadgeCreateData {
     discordRoleId: string;
 }
 
+export interface WarningResponse {
+    id: number;
+    userId: number;
+    username: string;
+    reason: string;
+    issuedById: number;
+    issuedByUsername: string;
+    createdAt: string;
+    active: boolean;
+}
+
+export interface SiteSettings {
+    maxWarningsBeforeBan: number;
+    autoBanOnMaxWarnings: boolean;
+    sendEmailOnWarning: boolean;
+    sendDiscordDmOnWarning: boolean;
+    sendEmailOnBan: boolean;
+    sendDiscordDmOnBan: boolean;
+    sendEmailOnApplicationApproved: boolean;
+    sendEmailOnApplicationRejected: boolean;
+    applicationsOpen: boolean;
+    registrationOpen: boolean;
+}
+
 export const adminApi = {
     // Users
     getAllUsers: async (): Promise<User[]> => {
@@ -71,5 +95,73 @@ export const adminApi = {
     removeBadge: async (userId: number, badgeId: number): Promise<void> => {
         await apiClient.delete(`/api/admin/users/${userId}/badges/${badgeId}`);
     },
+
+    // Warnings
+    getWarnings: async (userId: number): Promise<WarningResponse[]> => {
+        const response = await apiClient.get(`/api/admin/users/${userId}/warnings`);
+        return response.data;
+    },
+
+    issueWarning: async (userId: number, reason: string): Promise<WarningResponse> => {
+        const response = await apiClient.post(`/api/admin/users/${userId}/warnings`, { reason });
+        return response.data;
+    },
+
+    revokeWarning: async (warningId: number): Promise<WarningResponse> => {
+        const response = await apiClient.patch(`/api/admin/warnings/${warningId}/revoke`);
+        return response.data;
+    },
+
+    deleteWarning: async (warningId: number): Promise<void> => {
+        await apiClient.delete(`/api/admin/warnings/${warningId}`);
+    },
+
+    // Settings
+    getSettings: async (): Promise<SiteSettings> => {
+        const response = await apiClient.get('/api/admin/settings');
+        return response.data;
+    },
+
+    updateSettings: async (data: Partial<SiteSettings>): Promise<SiteSettings> => {
+        const response = await apiClient.patch('/api/admin/settings', data);
+        return response.data;
+    },
+
+    // Database
+    downloadBackup: async (): Promise<Blob> => {
+        const response = await apiClient.get('/api/admin/db/backup', { responseType: 'blob' });
+        return response.data;
+    },
+
+    restoreBackup: async (file: File): Promise<void> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        await apiClient.post('/api/admin/db/restore', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+
+    // Logs
+    getLogs: async (query?: string, page = 0, size = 50): Promise<{ content: AuditLog[], totalElements: number, totalPages: number }> => {
+        const response = await apiClient.get('/api/admin/logs', {
+            params: { query, page, size }
+        });
+        return response.data;
+    },
+
+    logDossierView: async (userId: number): Promise<void> => {
+        await apiClient.post(`/api/admin/users/${userId}/log-dossier-view`);
+    }
 };
+
+export interface AuditLog {
+    id: number;
+    actorId: number | null;
+    actorUsername: string;
+    actionType: string;
+    details: string;
+    targetUserId: number | null;
+    targetUsername: string | null;
+    createdAt: string;
+}
 
