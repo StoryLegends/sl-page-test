@@ -17,7 +17,7 @@ const ApplicationPage = () => {
 
     const [formData, setFormData] = useState({
         firstName: '',
-        lastName: '',
+        age: '',
         whyUs: '',
         source: '',
         makeContent: false,
@@ -87,11 +87,15 @@ const ApplicationPage = () => {
             }
 
             console.log('Application submission attempt with token length:', token.length);
-            await applicationsApi.create({ ...formData, recaptchaToken: token });
+            await applicationsApi.create({
+                ...formData,
+                age: formData.age ? parseInt(formData.age) : 0,
+                recaptchaToken: token
+            });
 
             setFormData({
                 firstName: '',
-                lastName: '',
+                age: '',
                 whyUs: '',
                 source: '',
                 makeContent: false,
@@ -221,11 +225,13 @@ const ApplicationPage = () => {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium mb-1 text-gray-300">Фамилия</label>
+                                                <label className="block text-sm font-medium mb-1 text-gray-300">Возраст</label>
                                                 <input
-                                                    type="text"
-                                                    value={formData.lastName}
-                                                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                                    type="number"
+                                                    min="0"
+                                                    max="126"
+                                                    value={formData.age}
+                                                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                                                     className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white"
                                                     required
                                                 />
@@ -384,8 +390,8 @@ const ApplicationPage = () => {
                                                                 </div>
                                                                 <div className="space-y-4 min-w-0">
                                                                     <div className="break-words overflow-hidden text-white">
-                                                                        <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">Имя Фамилия:</span>
-                                                                        <p className="text-sm">{app.firstName} {app.lastName}</p>
+                                                                        <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">Имя Возраст:</span>
+                                                                        <p className="text-sm">{app.firstName} ({app.age} лет)</p>
                                                                     </div>
                                                                     <div className="break-words overflow-hidden text-white">
                                                                         <span className="text-[10px] text-gray-500 uppercase font-bold block mb-1">Источник:</span>

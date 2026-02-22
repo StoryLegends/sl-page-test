@@ -324,7 +324,7 @@ const ProfilePage = () => {
                                                     'Ваша заявка находится на рассмотрении администрации.'}
                                         </p>
                                         <button
-                                            onClick={() => navigate('/apply')}
+                                            onClick={() => navigate('/application')}
                                             className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-lg text-[10px] font-bold uppercase tracking-wider text-gray-300 transition-all"
                                         >
                                             История заявок

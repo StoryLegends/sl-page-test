@@ -493,7 +493,7 @@ const AdminDashboardPage = () => {
         const query = appSearch.toLowerCase();
         const matchesSearch = (
             app.firstName?.toLowerCase().includes(query) ||
-            app.lastName?.toLowerCase().includes(query) ||
+            app.age?.toString().includes(query) ||
             app.user?.username?.toLowerCase().includes(query) ||
             app.id?.toString().includes(query) ||
             app.user?.minecraftNickname?.toLowerCase().includes(query)
@@ -934,7 +934,7 @@ const AdminDashboardPage = () => {
                                                         >
                                                             <td className="px-6 py-4">
                                                                 <div className="flex flex-col">
-                                                                    <span className="text-white font-bold">{app.firstName} {app.lastName}</span>
+                                                                    <span className="text-white font-bold">{app.firstName} ({app.age} лет)</span>
                                                                     <span className="text-xs text-gray-500">@{app.user.username}</span>
                                                                 </div>
                                                             </td>
@@ -974,10 +974,10 @@ const AdminDashboardPage = () => {
                                                         <div className="flex justify-between items-start mb-3">
                                                             <div className="flex items-center gap-3">
                                                                 <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-center font-minecraft text-gray-400">
-                                                                    {app.firstName?.[0]}{app.lastName?.[0]}
+                                                                    {app.firstName?.[0]}
                                                                 </div>
                                                                 <div>
-                                                                    <h4 className="text-white font-bold text-sm leading-tight">{app.firstName} {app.lastName}</h4>
+                                                                    <h4 className="text-white font-bold text-sm leading-tight">{app.firstName} ({app.age})</h4>
                                                                     <p className="text-[10px] text-gray-500 font-medium">@{app.user?.username}</p>
                                                                 </div>
                                                             </div>
@@ -1570,7 +1570,7 @@ const AdminDashboardPage = () => {
                                                 </span>
                                                 <span className="text-gray-500 text-[11px] font-mono uppercase tracking-widest opacity-60">Application #{currentApp.id}</span>
                                             </div>
-                                            <h3 className="text-2xl font-bold text-white tracking-tight">{currentApp.firstName} {currentApp.lastName}</h3>
+                                            <h3 className="text-2xl font-bold text-white tracking-tight">{currentApp.firstName} ({currentApp.age} лет)</h3>
                                         </div>
                                     </div>
                                     <button

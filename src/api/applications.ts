@@ -4,7 +4,7 @@ import type { User } from './users';
 export interface Application {
     id: number;
     firstName: string;
-    lastName: string;
+    age: number;
     whyUs: string;
     source: string;
     makeContent: boolean;
@@ -23,7 +23,7 @@ export interface MyApplicationsResponse {
 
 export interface ApplicationCreateData {
     firstName: string;
-    lastName: string;
+    age: number;
     whyUs: string;
     source: string;
     makeContent: boolean;
