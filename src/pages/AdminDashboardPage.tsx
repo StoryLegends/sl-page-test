@@ -187,7 +187,7 @@ const AdminDashboardPage = () => {
 
         return (
             <div className="flex items-center gap-2 min-w-0">
-                <code className={`${colorClasses} text-sm md:text-base font-bold font-mono tracking-tight shrink-0`}>
+                <code className={`${colorClasses} text-base md:text-lg font-bold font-mono tracking-tight shrink-0`}>
                     {displayIp}
                 </code>
                 {geo?.flag && (
@@ -196,7 +196,7 @@ const AdminDashboardPage = () => {
                     </span>
                 )}
                 {geo?.city && (
-                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tighter whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px]">
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-tighter whitespace-nowrap overflow-hidden text-ellipsis max-w-[120px]">
                         {geo.city}
                     </span>
                 )}
@@ -251,9 +251,7 @@ const AdminDashboardPage = () => {
         if (!confirm('Сбросить пароль пользователю?')) return;
         try {
             const res = await adminApi.resetUserPassword(id);
-            if (res.temporaryPassword) {
-                prompt('Пароль сброшен. Временный пароль (скопируйте):', res.temporaryPassword);
-            }
+            alert(res.message || 'Пароль успешно сброшен и отправлен на email пользователя');
             setOpenMenuUserId(null);
         } catch (err) {
             console.error(err);
@@ -646,8 +644,8 @@ const AdminDashboardPage = () => {
                                                         <td className="px-3 py-3">
                                                             <div className="flex flex-col">
                                                                 <span className="text-xs">{u.email}</span>
-                                                                <span className={`text-[9px] font-bold ${u.emailVerified ? 'text-green-500/60' : 'text-red-500/60'} uppercase mt-0.5`}>
-                                                                    {u.emailVerified ? '✓ Верно' : '✗ Почта'}
+                                                                <span className={`text-[10px] font-bold ${u.emailVerified ? 'text-green-500/60' : 'text-red-500/60'} uppercase mt-0.5`}>
+                                                                    {u.emailVerified ? '✓ ПОДТВЕРЖДЕНО' : '✗ НЕ ПОДТВЕРЖДЕНО'}
                                                                 </span>
                                                             </div>
                                                         </td>
@@ -1631,19 +1629,19 @@ const AdminDashboardPage = () => {
                                                     <span className="text-[10px] text-gray-500 uppercase font-bold tracking-[0.2em] block mb-4 border-b border-white/5 pb-1.5">ПРОФИЛЬ ИГРОКА</span>
                                                     <div className="grid grid-cols-1 gap-3">
                                                         <div className="flex flex-col gap-1 p-3 bg-black/40 rounded-xl border border-white/5">
-                                                            <span className="text-[9px] text-gray-500 uppercase tracking-widest font-black opacity-60">Ник на сайте:</span>
+                                                            <span className="text-xs text-gray-500 uppercase tracking-widest font-black opacity-60">Ник на сайте:</span>
                                                             <span className="text-story-gold font-bold text-sm">{currentApp.user?.username || '—'}</span>
                                                         </div>
                                                         <div className="flex flex-col gap-1 p-3 bg-black/40 rounded-xl border border-white/5">
-                                                            <span className="text-[9px] text-gray-500 uppercase tracking-widest font-black opacity-60">Email:</span>
+                                                            <span className="text-xs text-gray-500 uppercase tracking-widest font-black opacity-60">Email:</span>
                                                             <span className="text-white break-all text-sm font-medium">{currentApp.user?.email || '—'}</span>
                                                         </div>
                                                         <div className="flex flex-col gap-1 p-3 bg-black/40 rounded-xl border border-white/5">
-                                                            <span className="text-[9px] text-gray-500 uppercase tracking-widest font-black opacity-60">Discord:</span>
+                                                            <span className="text-xs text-gray-500 uppercase tracking-widest font-black opacity-60">Discord:</span>
                                                             <span className="text-blue-400 font-bold text-sm">{currentApp.user?.discordNickname || '—'}</span>
                                                         </div>
                                                         <div className="flex flex-col gap-1 p-3 bg-black/40 rounded-xl border border-white/5">
-                                                            <span className="text-[9px] text-gray-500 uppercase tracking-widest font-black opacity-60">Minecraft:</span>
+                                                            <span className="text-xs text-gray-500 uppercase tracking-widest font-black opacity-60">Minecraft:</span>
                                                             <span className="text-green-400 font-bold text-sm">{currentApp.user?.minecraftNickname || '—'}</span>
                                                         </div>
                                                     </div>
@@ -1700,7 +1698,7 @@ const AdminDashboardPage = () => {
                                         {/* Column 3: The Verdict & Meta */}
                                         <div className="space-y-4">
                                             <div className="bg-story-gold/[0.03] rounded-2xl p-4 border border-story-gold/20 shadow-[0_0_40px_rgba(255,191,0,0.02)] space-y-4">
-                                                <h4 className="text-story-gold font-black text-[10px] uppercase tracking-[0.3em] flex items-center gap-2">
+                                                <h4 className="text-story-gold font-black text-xs uppercase tracking-[0.3em] flex items-center gap-2">
                                                     <Shield className="w-4 h-4 opacity-50" /> VERDICT
                                                 </h4>
                                                 <textarea
@@ -1735,19 +1733,19 @@ const AdminDashboardPage = () => {
                                             </div>
 
                                             <div className="bg-white/[0.02] rounded-2xl p-4 border border-white/5 space-y-4 shadow-xl">
-                                                <span className="text-[10px] text-gray-500 uppercase font-black tracking-[0.2em] block border-b border-white/5 pb-1.5">METADATA</span>
+                                                <span className="text-xs text-gray-500 uppercase font-black tracking-[0.2em] block border-b border-white/5 pb-1.5">METADATA</span>
                                                 <div className="grid grid-cols-1 gap-4">
                                                     <div className="space-y-3">
                                                         <div className="flex flex-col gap-0.5">
-                                                            <span className="text-[9px] text-gray-500 font-black uppercase tracking-widest opacity-60">Application ID:</span>
+                                                            <span className="text-xs text-gray-500 font-black uppercase tracking-widest opacity-60">Application ID:</span>
                                                             <span className="text-xs text-gray-300 font-mono break-all">#{currentApp.id}</span>
                                                         </div>
                                                         <div className="flex flex-col gap-0.5">
-                                                            <span className="text-[9px] text-gray-500 font-black uppercase tracking-widest opacity-60">Internal User ID:</span>
+                                                            <span className="text-xs text-gray-500 font-black uppercase tracking-widest opacity-60">Internal User ID:</span>
                                                             <span className="text-xs text-gray-300 font-mono break-all">{currentApp.userId || '—'}</span>
                                                         </div>
                                                         <div className="flex flex-col gap-0.5">
-                                                            <span className="text-[9px] text-gray-500 font-black uppercase tracking-widest opacity-60">Submitted Date:</span>
+                                                            <span className="text-xs text-gray-500 font-black uppercase tracking-widest opacity-60">Submitted Date:</span>
                                                             <p className="text-xs text-gray-300 font-medium tracking-tight text-white/80">
                                                                 {new Date(currentApp.createdAt).toLocaleString()}
                                                             </p>
@@ -1799,7 +1797,7 @@ const AdminDashboardPage = () => {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                     <div className="bg-black/30 p-3 rounded-xl border border-white/5">
                                                         <div className="flex items-center justify-between mb-2">
-                                                            <span className="text-[10px] text-gray-500 uppercase font-black">IP Address</span>
+                                                            <span className="text-xs text-gray-500 uppercase font-black">IP Address</span>
                                                             <button
                                                                 onClick={async () => {
                                                                     const rawIp = users.find(u => u.id === showSecurityDossier)?.registrationIp || '';
@@ -1818,8 +1816,8 @@ const AdminDashboardPage = () => {
                                                         />
                                                     </div>
                                                     <div className="bg-black/30 p-3 rounded-xl border border-white/5">
-                                                        <span className="text-[10px] text-gray-500 uppercase font-black block mb-2">User Agent</span>
-                                                        <p className="text-[9px] text-gray-400 font-mono break-all line-clamp-2">
+                                                        <span className="text-xs text-gray-500 uppercase font-black block mb-2">User Agent</span>
+                                                        <p className="text-[11px] text-gray-400 font-mono break-all line-clamp-2">
                                                             {users.find(u => u.id === showSecurityDossier)?.registrationUserAgent || 'No data'}
                                                         </p>
                                                     </div>
@@ -1827,16 +1825,16 @@ const AdminDashboardPage = () => {
                                             </div>
 
                                             {/* Sessions Section */}
-                                            <div className="bg-neutral-800/40 p-3 rounded-xl border border-white/5 space-y-2">
-                                                <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest pl-1">Session History</span>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div className="bg-neutral-800/40 p-4 rounded-xl border border-white/5 space-y-3">
+                                                <span className="text-xs font-black text-gray-500 uppercase tracking-widest pl-1">Session History</span>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {[
                                                         { ip: 'lastLoginIp1', ua: 'lastLoginUserAgent1', label: 'Main Session', color: 'text-green-500' },
                                                         { ip: 'lastLoginIp2', ua: 'lastLoginUserAgent2', label: 'Previous Session', color: 'text-gray-400' }
                                                     ].map((s, idx) => (
-                                                        <div key={idx} className="bg-black/30 p-3 rounded-xl border border-white/5">
+                                                        <div key={idx} className="bg-black/30 p-4 rounded-xl border border-white/5">
                                                             <div className="flex items-center justify-between mb-2">
-                                                                <span className="text-[10px] text-gray-500 uppercase font-black">{s.label}</span>
+                                                                <span className="text-xs text-gray-500 uppercase font-black">{s.label}</span>
                                                                 <button
                                                                     onClick={async () => {
                                                                         const rawIp = (users.find(u => u.id === showSecurityDossier) as any)?.[s.ip] || '';
@@ -1853,7 +1851,7 @@ const AdminDashboardPage = () => {
                                                                 ip={(users.find(u => u.id === showSecurityDossier) as any)?.[s.ip]}
                                                                 colorClasses={s.color}
                                                             />
-                                                            <p className="mt-2 text-[9px] text-gray-600 font-mono break-all line-clamp-1 border-t border-white/5 pt-1">
+                                                            <p className="mt-2 text-[11px] text-gray-600 font-mono break-all line-clamp-1 border-t border-white/5 pt-1">
                                                                 {(users.find(u => u.id === showSecurityDossier) as any)?.[s.ua] || 'No metadata'}
                                                             </p>
                                                         </div>
@@ -2015,10 +2013,10 @@ const AdminDashboardPage = () => {
                                     {/* History List */}
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between mb-2 px-1">
-                                            <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widestAlpha flex items-center gap-2">
-                                                <History className="w-3.5 h-3.5" /> История предупреждений
+                                            <h4 className="text-xs font-black text-gray-500 uppercase tracking-widestAlpha flex items-center gap-2">
+                                                <AlertCircle className="w-4 h-4 opacity-50" /> История
                                             </h4>
-                                            <span className="text-[9px] text-gray-600 font-bold uppercase">{userWarnings.length} записи</span>
+                                            <span className="text-xs text-gray-600 font-bold uppercase">{userWarnings.length} записи</span>
                                         </div>
 
                                         {userWarnings.length === 0 ? (
@@ -2039,20 +2037,13 @@ const AdminDashboardPage = () => {
                                                                         ID: #{w.id}
                                                                     </span>
                                                                 </div>
-                                                                <p className="text-white text-sm font-medium leading-relaxed">
-                                                                    {w.reason}
-                                                                </p>
-                                                                <div className="flex items-center gap-4 pt-1">
-                                                                    <div className="flex items-center gap-1.5 grayscale opacity-50">
-                                                                        <div className="w-4 h-4 rounded-full bg-zinc-800 flex items-center justify-center text-[8px] text-gray-400 font-bold">
-                                                                            {w.issuedByUsername?.charAt(0)}
-                                                                        </div>
-                                                                        <span className="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">от {w.issuedByUsername}</span>
-                                                                    </div>
-                                                                    <span className="text-[9px] text-gray-600 font-bold uppercase tracking-tighter shrink-0">
-                                                                        {new Date(w.createdAt).toLocaleString()}
-                                                                    </span>
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-sm font-bold text-white group-hover:text-story-gold transition-colors">{w.reason}</span>
+                                                                    <span className="text-[11px] text-gray-500 font-bold uppercase tracking-tighter">от {w.issuedByUsername}</span>
                                                                 </div>
+                                                                <span className="text-[11px] text-gray-600 font-bold uppercase tracking-tighter shrink-0">
+                                                                    {new Date(w.createdAt).toLocaleString()}
+                                                                </span>
                                                             </div>
 
                                                             <div className="flex gap-2">
@@ -2085,12 +2076,12 @@ const AdminDashboardPage = () => {
 
                                 {/* Footer */}
                                 <div className="px-8 py-5 bg-black/40 border-t border-white/5 flex justify-between items-center shrink-0">
-                                    <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widestAlpha max-w-xs leading-relaxed">
-                                        Предупреждения влияют на возможность автоматической блокировки аккаунта при достижении лимита.
+                                    <p className="text-xs text-gray-600 font-bold uppercase tracking-widestAlpha max-w-xs leading-relaxed">
+                                        Действуйте осторожно. Изменения применяются мгновенно.
                                     </p>
                                     <button
-                                        onClick={() => setShowWarningsModal(false)}
-                                        className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white font-black rounded-xl border border-white/10 transition-all uppercase tracking-widest text-[9px]"
+                                        onClick={() => { setShowEditUserModal(false); setShowWarningsModal(false); setShowBadgeModal(false); }}
+                                        className="px-6 py-2.5 bg-white/5 hover:bg-white/10 text-white font-black rounded-xl border border-white/10 transition-all uppercase tracking-widest text-xs"
                                     >
                                         Закрыть
                                     </button>

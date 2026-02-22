@@ -63,7 +63,7 @@ export const adminApi = {
         return response.data;
     },
 
-    resetUserPassword: async (id: number): Promise<{ temporaryPassword: string }> => {
+    resetUserPassword: async (id: number): Promise<{ status: string, message: string }> => {
         const response = await apiClient.post(`/api/admin/users/${id}/reset-password`);
         return response.data;
     },

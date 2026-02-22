@@ -113,6 +113,21 @@ const Navbar: React.FC = () => {
                   );
                 })}
               </div>
+
+              <div className="flex items-center gap-4 ml-2">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`text-gray-400 ${social.color} transition-colors`}
+                    title={social.name}
+                  >
+                    <social.icon className="w-4 h-4 md:w-5 md:h-5" />
+                  </a>
+                ))}
+              </div>
               <div className="w-px h-5 bg-white/10" />
             </div>
 
