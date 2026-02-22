@@ -3,7 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { XCircle } from 'lucide-react';
+import { XCircle, Eye, EyeOff } from 'lucide-react';
+import apiClient from '../api/client';
 import { useGoogleReCaptcha } from 'react19-google-recaptcha-v3';
 import { useNotification } from '../context/NotificationContext';
 
@@ -11,6 +12,9 @@ const RegisterPage = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [discordNickname, setDiscordNickname] = useState('');
     const [minecraftNickname, setMinecraftNickname] = useState('');
     const { register } = useAuth();
@@ -23,8 +27,8 @@ const RegisterPage = () => {
     React.useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const res = await (await import('../api')).adminApi.getSettings();
-                setSettings(res);
+                const res = await apiClient.get('/api/auth/public/settings');
+                setSettings(res.data);
             } catch (err) {
                 console.error('Failed to fetch settings', err);
             } finally {
@@ -42,6 +46,12 @@ const RegisterPage = () => {
 
         if (!executeRecaptcha) {
             showNotification('reCAPTCHA не готова', 'error');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('Пароли не совпадают');
+            showNotification('Пароли не совпадают', 'error');
             return;
         }
 
@@ -165,15 +175,46 @@ const RegisterPage = () => {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="password">Пароль</label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                        placeholder="••••••••"
-                                        required
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            id="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500 pr-12"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="confirmPassword">Подтвердите пароль</label>
+                                    <div className="relative">
+                                        <input
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            id="confirmPassword"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500 pr-12"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                        >
+                                            {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <button

@@ -5,10 +5,12 @@ import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import { useNotification } from '../context/NotificationContext';
 import { useGoogleReCaptcha } from 'react19-google-recaptcha-v3';
+import { Eye, EyeOff } from 'lucide-react';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [totpCode, setTotpCode] = useState('');
     const [totpRequired, setTotpRequired] = useState(false);
     const { login } = useAuth();
@@ -96,15 +98,24 @@ const LoginPage = () => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-300 mb-2" htmlFor="password">Пароль</label>
-                                        <input
-                                            type="password"
-                                            id="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                            placeholder="••••••••"
-                                            required
-                                        />
+                                        <div className="relative">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                id="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500 pr-12"
+                                                placeholder="••••••••"
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                            >
+                                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="flex justify-end">
                                         <Link
