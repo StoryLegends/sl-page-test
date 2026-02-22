@@ -86,15 +86,20 @@ const PlayersPage = () => {
                                         <div>
                                             <div className="flex items-center gap-2 mb-1.5 min-w-0">
                                                 <h3 className="font-bold text-white text-lg truncate leading-none">{user.username}</h3>
+                                                {(user.role === 'ROLE_ADMIN' || user.role === 'ROLE_MODERATOR') && (
+                                                    <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-red-500/20 text-red-300 border border-red-500/30 whitespace-nowrap">
+                                                        {user.role === 'ROLE_ADMIN' ? 'Admin' : 'Moderator'}
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="flex flex-wrap gap-1.5 items-center">
                                                 {user.badges && user.badges.map(badge => (
                                                     <div key={badge.id} className="group/badge relative flex items-center justify-center">
                                                         <div
-                                                            className="w-7 h-7 flex items-center justify-center transition-all duration-300 hover:scale-120 active:scale-90 cursor-help"
+                                                            className="w-7 h-7 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90 cursor-help"
                                                             style={{ color: badge.color }}
                                                         >
-                                                            <div className="w-5 h-5 badge-icon" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
+                                                            <div className="w-5 h-5 flex items-center justify-center [&>svg]:w-5 [&>svg]:h-5 [&>svg]:max-w-full [&>svg]:max-h-full" dangerouslySetInnerHTML={{ __html: badge.svgIcon }} />
                                                         </div>
                                                         {/* Tooltip */}
                                                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#0a0a0a] border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-wider text-white whitespace-nowrap opacity-0 group-hover/badge:opacity-100 transition-opacity pointer-events-none z-10 shadow-2xl">
