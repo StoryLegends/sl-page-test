@@ -1665,7 +1665,7 @@ const AdminDashboardPage = () => {
 
                                             {/* Past Applications */}
                                             {(() => {
-                                                const pastApps = applications.filter(app => app.userId === currentApp.userId && app.id !== currentApp.id);
+                                                const pastApps = applications.filter(app => app.user?.id === currentApp.user?.id && app.id !== currentApp.id);
                                                 if (pastApps.length === 0) return null;
                                                 return (
                                                     <div className="bg-gradient-to-b from-white/[0.07] to-transparent rounded-2xl p-4 border border-white/10 shadow-2xl space-y-4">
