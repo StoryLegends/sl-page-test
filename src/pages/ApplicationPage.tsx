@@ -3,15 +3,25 @@ import { applicationsApi } from '../api';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { ScrollText, Send, Clock, CheckCircle, XCircle, Mail, ShieldCheck } from 'lucide-react';
+import { ScrollText, Send, Clock, CheckCircle, XCircle, Mail, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useGoogleReCaptcha } from 'react19-google-recaptcha-v3';
 import { useNotification } from '../context/NotificationContext';
 import { useNavigate } from 'react-router-dom';
 
 const ApplicationPage = () => {
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, refreshUser } = useAuth();
     const { showNotification } = useNotification();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        let interval: ReturnType<typeof setInterval>;
+        if (user && user.discordVerified && !user.inDiscordServer) {
+            interval = setInterval(() => {
+                refreshUser();
+            }, 3000);
+        }
+        return () => clearInterval(interval);
+    }, [user?.inDiscordServer, user?.discordVerified, refreshUser]);
     const [myApplications, setMyApplications] = useState<any[]>([]);
     const [expandedAppId, setExpandedAppId] = useState<string | null>(null);
 
@@ -35,7 +45,7 @@ const ApplicationPage = () => {
 
     const fetchSettings = async () => {
         try {
-            const res = await (await import('../api')).adminApi.getSettings();
+            const res = await (await import('../api')).adminApi.getPublicSettings();
             setSettings(res);
         } catch (err) {
             console.error('Failed to fetch settings', err);
@@ -210,6 +220,22 @@ const ApplicationPage = () => {
                                         >
                                             Перейти в профиль
                                         </button>
+                                    </div>
+                                ) : !user?.inDiscordServer ? (
+                                    <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-8 text-center animate-fadeIn">
+                                        <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <AlertCircle className="w-8 h-8 text-red-500" />
+                                        </div>
+                                        <h3 className="text-xl font-bold text-red-400 mb-2">Вы не на сервере Discord</h3>
+                                        <p className="text-gray-300 mb-6">Для подачи заявки необходимо находиться на нашем Discord сервере.</p>
+                                        <a
+                                            href={import.meta.env.VITE_DISCORD_SERVER_URL || "#"}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-block px-6 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-200 text-sm font-bold rounded-xl border border-red-500/20 transition-all"
+                                        >
+                                            Зайти в Discord
+                                        </a>
                                     </div>
                                 ) : hasPendingApp ? (
                                     <div className="bg-story-gold/10 border border-story-gold/30 rounded-xl p-8 text-center">

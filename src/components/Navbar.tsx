@@ -150,7 +150,7 @@ const Navbar: React.FC = () => {
                       )}
                     </div>
                   ) : (
-                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full bg-story-gold/10 flex items-center justify-center border transition-all ${userMenuOpen ? 'bg-story-gold text-black border-story-gold' : 'text-story-gold border-story-gold/50'}`}>
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border transition-all ${userMenuOpen ? 'bg-story-gold/20 text-story-gold border-story-gold' : 'bg-story-gold/10 text-story-gold border-story-gold/50'}`}>
                       <User className="w-4 h-4 md:w-5 md:h-5" />
                     </div>
                   )}
@@ -176,14 +176,20 @@ const Navbar: React.FC = () => {
                           </Link>
                         )}
                         <div className="h-px bg-white/5 my-1" />
-                        <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                        <button onClick={() => { logout(); setUserMenuOpen(false); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
                           <X className="w-4 h-4" /> Выйти
                         </button>
                       </>
                     ) : (
                       <>
-                        <Link to="/login" className="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors" onClick={() => setUserMenuOpen(false)}>Войти</Link>
-                        <Link to="/register" className="block px-4 py-2 text-sm text-story-gold hover:bg-white/10 hover:text-white rounded-lg transition-colors font-bold" onClick={() => setUserMenuOpen(false)}>Регистрация</Link>
+                        <div className="px-2 py-1">
+                          <Link to="/login" className="block w-full px-4 py-2 text-sm text-gray-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors" onClick={() => setUserMenuOpen(false)}>
+                            Войти
+                          </Link>
+                          <Link to="/register" className="block w-full px-4 py-2 text-sm text-story-gold hover:bg-white/10 hover:text-white rounded-lg transition-colors font-bold mt-1" onClick={() => setUserMenuOpen(false)}>
+                            Регистрация
+                          </Link>
+                        </div>
                       </>
                     )}
                   </div>

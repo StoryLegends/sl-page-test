@@ -126,6 +126,11 @@ export const adminApi = {
         return response.data;
     },
 
+    getPublicSettings: async (): Promise<{ applicationsOpen: boolean; registrationOpen: boolean }> => {
+        const response = await apiClient.get('/api/admin/settings/public');
+        return response.data;
+    },
+
     updateSettings: async (data: Partial<SiteSettings>): Promise<SiteSettings> => {
         const response = await apiClient.patch('/api/admin/settings', data);
         return response.data;

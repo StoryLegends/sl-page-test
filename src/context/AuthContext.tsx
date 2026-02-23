@@ -8,6 +8,7 @@ interface AuthContextType {
     register: (data: any) => Promise<void>;
     verifyEmail: (token: string) => Promise<void>;
     logout: () => void;
+    refreshUser: () => Promise<void>;
     isAuthenticated: boolean;
     isAdmin: boolean;
     isModerator: boolean;
@@ -80,6 +81,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const refreshUser = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const refreshed = await usersApi.getMe();
+                setUser(refreshed);
+            } catch (error) {
+                console.error('Failed to refresh user', error);
+            }
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         setUser(null);
@@ -94,6 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 register,
                 verifyEmail,
                 logout,
+                refreshUser,
                 isAuthenticated: !!user,
                 isAdmin: user?.role === 'ROLE_ADMIN',
                 isModerator: user?.role === 'ROLE_MODERATOR',

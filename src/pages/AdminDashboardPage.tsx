@@ -4,7 +4,7 @@ import { adminApi, applicationsApi, type User } from '../api';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { Users, FileText, Shield, Ban, Search, Filter, MoreVertical, Edit, Key, Trash2, X, Copy, Mail, CheckCircle2, XCircle, Settings, AlertCircle, History, Send, Database, Download, Upload, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import { Users, FileText, Shield, ShieldCheck, Ban, Search, Filter, MoreVertical, Edit, Key, Trash2, X, Copy, Mail, CheckCircle2, XCircle, Settings, AlertCircle, History, Send, Database, Download, Upload, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 
 const AdminDashboardPage = () => {
     const { user, isAdmin, isModerator } = useAuth();
@@ -664,7 +664,12 @@ const AdminDashboardPage = () => {
                                                         <td className="px-3 py-3 text-xs">
                                                             <div className="space-y-0.5">
                                                                 <div className="flex items-center gap-1.5"><span className="text-[10px] text-gray-600 font-bold uppercase w-5 text-right">MC:</span> <span className="text-gray-400">{u.minecraftNickname || '-'}</span></div>
-                                                                <div className="flex items-center gap-1.5"><span className="text-[10px] text-gray-600 font-bold uppercase w-5 text-right">DS:</span> <span className="text-gray-400">{u.discordNickname || '-'}</span></div>
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className="text-[10px] text-gray-600 font-bold uppercase w-5 text-right">DS:</span>
+                                                                    <span className="text-gray-400">{u.discordNickname || '-'}</span>
+                                                                    <span className={`text-[10px] transition-colors ${u.inDiscordServer ? 'text-indigo-400' : 'text-gray-600 grayscale opacity-50'}`} title={u.inDiscordServer ? "На сервере" : "Не на сервере"}>🌐</span>
+                                                                    <span title={u.discordVerified ? "Верифицирован" : "Не верифицирован"} className="flex items-center"><ShieldCheck className={`w-3 h-3 transition-colors ${u.discordVerified ? 'text-indigo-500' : 'text-gray-600 opacity-50'}`} /></span>
+                                                                </div>
                                                             </div>
                                                         </td>
                                                         <td className="px-3 py-3">
@@ -752,9 +757,6 @@ const AdminDashboardPage = () => {
                                                                     <div className="w-full h-full flex items-center justify-center font-bold text-gray-600 text-xl">{u.username.charAt(0)}</div>
                                                                 )}
                                                             </div>
-                                                            {u.isPlayer && (
-                                                                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#0a0a0a] shadow-[0_0_10px_rgba(34,197,94,0.5)] z-10" />
-                                                            )}
                                                         </div>
                                                         <div className="flex-grow min-w-0">
                                                             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
@@ -804,6 +806,35 @@ const AdminDashboardPage = () => {
                                                             </div>
                                                         )}
                                                     </div>
+
+                                                    <div className="flex items-center justify-between gap-3 border-t border-white/[0.03] pt-3 mt-1">
+                                                        <div className="flex items-center gap-3 w-1/2 min-w-0 pr-2 border-r border-white/[0.03]">
+                                                            <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center shrink-0">
+                                                                <span className="text-[9px] font-black text-gray-500 uppercase">MC</span>
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <p className="text-gray-300 text-[11px] font-medium truncate leading-none mt-0.5">{u.minecraftNickname || '-'}</p>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-3 w-1/2 min-w-0 pl-1">
+                                                            <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center shrink-0">
+                                                                <span className="text-[9px] font-black text-gray-500 uppercase">DS</span>
+                                                            </div>
+                                                            <div className="min-w-0 flex items-center gap-1.5 mt-0.5">
+                                                                <p className="text-gray-300 text-[11px] font-medium truncate leading-none">{u.discordNickname || '-'}</p>
+                                                                {u.discordNickname && (
+                                                                    <>
+                                                                        <span className={`text-[10px] leading-none shrink-0 ${u.inDiscordServer ? 'text-indigo-400' : 'text-gray-600 grayscale opacity-50'}`} title={u.inDiscordServer ? "На сервере" : "Не на сервере"}>🌐</span>
+                                                                        <span title={u.discordVerified ? "Верифицирован" : "Не верифицирован"} className="flex items-center shrink-0">
+                                                                            <ShieldCheck className={`w-3 h-3 ${u.discordVerified ? 'text-indigo-500' : 'text-gray-600 opacity-50'}`} />
+                                                                        </span>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
                                                 {/* Badges Section */}

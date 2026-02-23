@@ -25,6 +25,7 @@ export interface User {
     isPlayer: boolean;
     inSeason: boolean;
     discordUserId?: string;
+    inDiscordServer: boolean;
     badges?: Badge[];
     // Admin-only security fields
     registrationIp?: string;
