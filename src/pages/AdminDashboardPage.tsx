@@ -259,6 +259,19 @@ const AdminDashboardPage = () => {
         }
     };
 
+    const handleUnlinkDiscord = async (id: number) => {
+        if (!confirm('Отвязать Discord аккаунт пользователя?')) return;
+        try {
+            await adminApi.updateUser(id, { unlinkDiscord: true });
+            alert('Discord аккаунт успешно отвязан');
+            setOpenMenuUserId(null);
+            fetchData();
+        } catch (err) {
+            console.error(err);
+            alert('Не удалось отвязать Discord');
+        }
+    };
+
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -713,6 +726,12 @@ const AdminDashboardPage = () => {
                                                                             <button onClick={(e) => { e.stopPropagation(); handleResetPassword(u.id); }} className="w-full text-left px-4 py-2 hover:bg-white/10 flex items-center gap-3 transition-colors text-xs font-bold text-yellow-400">
                                                                                 <Key className="w-4 h-4" /> Сбросить пароль
                                                                             </button>
+                                                                            <button onClick={(e) => { e.stopPropagation(); handleUnlinkDiscord(u.id); }} className="w-full text-left px-4 py-2 hover:bg-white/10 flex items-center gap-3 transition-colors text-xs font-bold text-indigo-400">
+                                                                                <div className="flex items-center justify-center w-4 h-4">
+                                                                                    <span className="text-[10px] uppercase font-black tracking-widest leading-none border border-indigo-500/30 rounded px-0.5">DS</span>
+                                                                                </div>
+                                                                                Отвязать Discord
+                                                                            </button>
                                                                             {u.banned ? (
                                                                                 <button onClick={(e) => { e.stopPropagation(); handleUnban(u.id); }} className="w-full text-left px-4 py-2 hover:bg-white/10 flex items-center gap-3 transition-colors text-xs font-bold text-green-400"><Shield className="w-4 h-4" /> Разбанить</button>
                                                                             ) : (
@@ -867,6 +886,12 @@ const AdminDashboardPage = () => {
                                                                         <Key className="w-3.5 h-3.5 text-yellow-400" />
                                                                     </div>
                                                                     Сбросить пароль
+                                                                </button>
+                                                                <button onClick={(e) => { e.stopPropagation(); handleUnlinkDiscord(u.id); }} className="w-full text-left px-4 py-3 hover:bg-white/5 flex items-center gap-3 transition-colors text-[11px] font-bold text-indigo-400 group/item">
+                                                                    <div className="w-7 h-7 bg-indigo-500/10 rounded-lg flex items-center justify-center group-hover/item:bg-indigo-500/20 transition-colors shrink-0">
+                                                                        <span className="text-[8px] uppercase font-black tracking-widest leading-none">DS</span>
+                                                                    </div>
+                                                                    Отвязать Discord
                                                                 </button>
                                                                 <div className="h-px bg-white/5 mx-2 my-1" />
                                                                 {u.banned ? (

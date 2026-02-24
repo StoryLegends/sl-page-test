@@ -55,6 +55,13 @@ const RegisterPage = () => {
             return;
         }
 
+        const passwordRegex = /^(?=.*[0-9])(?=.*[\p{Ll}])(?=.*[\p{Lu}])(?=.*[\p{P}\p{S}]).*$/u;
+        if (!passwordRegex.test(password)) {
+            setError('Пароль должен содержать минимум 8 символов, включая цифру, строчную и заглавную буквы, а также специальный символ');
+            showNotification('Слишком простой пароль', 'error');
+            return;
+        }
+
         try {
             console.log('Executing reCAPTCHA...');
             const token = await executeRecaptcha('register');
@@ -193,6 +200,9 @@ const RegisterPage = () => {
                                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
+                                    <p className="text-[10px] text-gray-500 mt-2 ml-1 leading-tight">
+                                        Пароль должен содержать минимум <span className="text-gray-300">8 символов</span>, включая <span className="text-gray-300">цифру</span>, <span className="text-gray-300">строчную</span> и <span className="text-gray-300">заглавную</span> буквы, а также <span className="text-gray-300">специальный символ</span>.
+                                    </p>
                                 </div>
 
                                 <div>

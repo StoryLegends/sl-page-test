@@ -46,6 +46,7 @@ export interface UpdateProfileData {
     role?: string;
     oldPassword?: string;
     newPassword?: string;
+    unlinkDiscord?: boolean;
 }
 
 export const usersApi = {

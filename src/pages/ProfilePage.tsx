@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { User as UserIcon, Camera, Settings, Edit3, ShieldCheck, Mail, ExternalLink, LogOut, CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react';
-import { applicationsApi, usersApi, filesApi, totpApi, authApi } from '../api';
+import { User as UserIcon, Settings, Edit3, ShieldCheck, Mail, ExternalLink, LogOut, CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react';
+import { applicationsApi, usersApi, totpApi, authApi } from '../api';
 import { useNotification } from '../context/NotificationContext';
 
 const ProfilePage = () => {
@@ -29,7 +29,6 @@ const ProfilePage = () => {
         minecraftNickname: user?.minecraftNickname || '',
         bio: user?.bio || ''
     });
-    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [showBanModal, setShowBanModal] = useState(false);
 
@@ -134,7 +133,11 @@ const ProfilePage = () => {
         }
 
         try {
-            await usersApi.updateMe(formData);
+            const dataToUpdate = { ...formData };
+            if (!dataToUpdate.discordNickname) delete (dataToUpdate as any).discordNickname;
+            if (!dataToUpdate.minecraftNickname) delete (dataToUpdate as any).minecraftNickname;
+
+            await usersApi.updateMe(dataToUpdate);
             setIsEditing(false);
             showNotification('Профиль успешно обновлен!', 'success');
             navigate(0);
@@ -204,20 +207,7 @@ const ProfilePage = () => {
         }
     };
 
-    const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const res = await filesApi.uploadAvatar(file);
-                // Update user profile with new avatar URL
-                await usersApi.updateMe({ ...formData, avatarUrl: res.url });
-                navigate(0);
-            } catch (err) {
-                console.error('Failed to upload avatar', err);
-                showNotification('Failed to upload avatar', 'error');
-            }
-        }
-    };
+
 
     if (!user) return (
         <Layout>
@@ -244,26 +234,11 @@ const ProfilePage = () => {
                                         {user.avatarUrl ? (
                                             <img src={user.avatarUrl} alt={user.username} className="avatar-img" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <UserIcon className="w-12 h-12 text-story-gold" />
+                                            <div className="w-full h-full bg-gradient-to-br from-story-gold to-story-gold-dark flex items-center justify-center text-black font-bold text-4xl">
+                                                {user.username.charAt(0).toUpperCase()}
                                             </div>
                                         )}
                                     </div>
-                                    {!user.banned && (
-                                        <button
-                                            onClick={() => fileInputRef.current?.click()}
-                                            className="absolute bottom-0 right-0 p-2 bg-story-gold rounded-full text-black shadow-lg hover:bg-white transition-colors"
-                                        >
-                                            <Camera className="w-4 h-4" />
-                                        </button>
-                                    )}
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        className="hidden"
-                                        onChange={handleAvatarUpload}
-                                        accept="image/*"
-                                    />
                                 </div>
 
                                 <h2 className="text-2xl font-bold font-minecraft text-white mb-2 text-center">
@@ -502,10 +477,10 @@ const ProfilePage = () => {
                                                                 type="text"
                                                                 value={formData.discordNickname}
                                                                 onChange={(e) => setFormData({ ...formData, discordNickname: e.target.value })}
-                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.discordVerified || user.isPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.discordVerified || (user.isPlayer && !!user.discordNickname) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="user#1234"
-                                                                disabled={user.discordVerified || user.isPlayer}
-                                                                title={user.isPlayer ? "Игрокам запрещено изменять никнеймы" : ""}
+                                                                disabled={user.discordVerified || (user.isPlayer && !!user.discordNickname)}
+                                                                title={user.isPlayer && !!user.discordNickname ? "Игрокам запрещено изменять никнеймы" : ""}
                                                             />
                                                         </div>
                                                         <div>
@@ -516,10 +491,10 @@ const ProfilePage = () => {
                                                                 type="text"
                                                                 value={formData.minecraftNickname}
                                                                 onChange={(e) => setFormData({ ...formData, minecraftNickname: e.target.value })}
-                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.isPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.isPlayer && !!user.minecraftNickname ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="Steve"
-                                                                disabled={user.isPlayer}
-                                                                title={user.isPlayer ? "Игрокам запрещено изменять никнеймы" : ""}
+                                                                disabled={user.isPlayer && !!user.minecraftNickname}
+                                                                title={user.isPlayer && !!user.minecraftNickname ? "Игрокам запрещено изменять никнеймы" : ""}
                                                             />
                                                         </div>
                                                     </div>
