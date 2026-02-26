@@ -1401,7 +1401,8 @@ const AdminDashboardPage = () => {
                                                         <th className="px-6 py-4">Инициатор</th>
                                                         <th className="px-6 py-4">Событие</th>
                                                         <th className="px-6 py-4">Детали</th>
-                                                        <th className="px-6 py-4">Цель</th>
+                                                        <th className="px-6 py-4">Объект</th>
+                                                        <th className="px-6 py-4">Источник (IP/UA)</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-white/5">
@@ -1434,11 +1435,13 @@ const AdminDashboardPage = () => {
                                                             <td className="px-6 py-4">
                                                                 <span className={`px-2 py-0.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider border ${log.actionType.startsWith('ADMIN_')
                                                                     ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                                                                    : log.actionType.startsWith('USER_')
-                                                                        ? 'bg-story-gold/10 text-story-gold border-story-gold/20'
-                                                                        : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                                                    : log.actionType.startsWith('SECURITY_')
+                                                                        ? 'bg-red-600 text-white border-red-700 shadow-[0_0_10px_rgba(220,38,38,0.3)] animate-pulse'
+                                                                        : log.actionType.startsWith('USER_')
+                                                                            ? 'bg-story-gold/10 text-story-gold border-story-gold/20'
+                                                                            : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                                                     }`}>
-                                                                    {log.actionType.replace('ADMIN_', '').replace('USER_', '')}
+                                                                    {log.actionType.replace('ADMIN_', '').replace('SECURITY_', '').replace('USER_', '')}
                                                                 </span>
                                                             </td>
                                                             <td className="px-6 py-4">
@@ -1451,12 +1454,26 @@ const AdminDashboardPage = () => {
                                                                     <div className="flex items-center gap-2">
                                                                         <div className="flex flex-col">
                                                                             <span className="text-xs font-bold text-gray-300 group-hover/log:text-white transition-colors">{log.targetUsername}</span>
-                                                                            <span className="text-[9px] text-gray-600 font-mono">#{log.targetUserId}</span>
+                                                                            <span className="text-[9px] text-gray-600 font-mono tracking-tighter">ID: {log.targetUserId}</span>
                                                                         </div>
                                                                     </div>
                                                                 ) : (
                                                                     <span className="text-gray-700 text-[10px] tracking-widest">—</span>
                                                                 )}
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                                <div className="flex flex-col gap-1">
+                                                                    {log.ipAddress ? (
+                                                                        <IPGeoInfo ip={log.ipAddress} colorClasses="text-gray-400 group-hover/log:text-gray-300 transition-colors" />
+                                                                    ) : (
+                                                                        <span className="text-gray-700 text-[10px] tracking-widest">—</span>
+                                                                    )}
+                                                                    {log.userAgent && (
+                                                                        <span className="text-[9px] text-gray-600 font-mono truncate max-w-[120px] cursor-help hover:text-gray-400 transition-colors" title={log.userAgent}>
+                                                                            {log.userAgent.length > 20 ? log.userAgent.substring(0, 20) + '...' : log.userAgent}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     ))}

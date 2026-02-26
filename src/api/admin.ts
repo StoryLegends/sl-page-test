@@ -173,6 +173,8 @@ export interface AuditLog {
     details: string;
     targetUserId: number | null;
     targetUsername: string | null;
+    ipAddress: string | null;
+    userAgent: string | null;
     createdAt: string;
 }
 

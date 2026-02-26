@@ -146,7 +146,7 @@ const Navbar: React.FC = () => {
                       <UserAvatar
                         avatarUrl={user.avatarUrl}
                         username={user.username}
-                        size="sm"
+                        size="full"
                       />
                     </div>
                   ) : (

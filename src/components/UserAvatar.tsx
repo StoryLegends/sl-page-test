@@ -4,7 +4,7 @@ interface UserAvatarProps {
     avatarUrl: string | null | undefined;
     username: string;
     className?: string;
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
     rounded?: string;
 }
 
@@ -17,7 +17,8 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ avatarUrl, username, className 
         'sm': 'w-8 h-8 text-xs',
         'md': 'w-10 h-10 text-base',
         'lg': 'w-12 h-12 text-xl',
-        'xl': 'w-32 h-32 text-4xl'
+        'xl': 'w-32 h-32 text-4xl',
+        'full': 'w-full h-full text-base'
     };
 
     const containerClass = sizeMemo[size] || sizeMemo['md'];
