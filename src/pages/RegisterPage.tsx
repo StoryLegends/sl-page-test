@@ -90,7 +90,7 @@ const RegisterPage = () => {
             setError(errorMsg);
             showNotification(errorMsg, 'error');
         }
-    }, [executeRecaptcha, username, email, password, discordNickname, minecraftNickname, register, navigate, showNotification]);
+    }, [executeRecaptcha, username, email, password, confirmPassword, discordNickname, minecraftNickname, register, navigate, showNotification]);
 
     return (
         <Layout>
