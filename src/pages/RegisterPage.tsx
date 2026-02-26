@@ -15,7 +15,6 @@ const RegisterPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [discordNickname, setDiscordNickname] = useState('');
     const [minecraftNickname, setMinecraftNickname] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
@@ -77,7 +76,6 @@ const RegisterPage = () => {
                 username,
                 email,
                 password,
-                discordNickname,
                 minecraftNickname,
                 recaptchaToken: token
             });
@@ -90,7 +88,7 @@ const RegisterPage = () => {
             setError(errorMsg);
             showNotification(errorMsg, 'error');
         }
-    }, [executeRecaptcha, username, email, password, confirmPassword, discordNickname, minecraftNickname, register, navigate, showNotification]);
+    }, [executeRecaptcha, username, email, password, confirmPassword, minecraftNickname, register, navigate, showNotification]);
 
     return (
         <Layout>
@@ -154,18 +152,6 @@ const RegisterPage = () => {
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="discord">Discord Tag</label>
-                                    <input
-                                        type="text"
-                                        id="discord"
-                                        value={discordNickname}
-                                        onChange={(e) => setDiscordNickname(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white placeholder-gray-500"
-                                        placeholder="user#1234"
-                                        required
-                                    />
-                                </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-1" htmlFor="minecraft">Minecraft Nickname</label>

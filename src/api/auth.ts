@@ -4,7 +4,7 @@ export interface RegisterData {
     username: string;
     password: string;
     email: string;
-    discordNickname: string;
+    discordNickname?: string;
     minecraftNickname: string;
     recaptchaToken: string;
     bio?: string;
