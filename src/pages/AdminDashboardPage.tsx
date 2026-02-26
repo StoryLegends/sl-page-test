@@ -24,6 +24,12 @@ const AdminDashboardPage = () => {
     const [appSearch, setAppSearch] = useState('');
     const [userRoleFilter, setUserRoleFilter] = useState<string>('');
 
+    // Pagination states
+    const [usersPage, setUsersPage] = useState(0);
+    const [totalUsersPages, setTotalUsersPages] = useState(0);
+    const [appsPage, setAppsPage] = useState(0);
+    const [totalAppsPages, setTotalAppsPages] = useState(0);
+
     // Logs state
     const [auditLogs, setAuditLogs] = useState<any[]>([]);
     const [logsSearch, setLogsSearch] = useState('');
@@ -213,7 +219,8 @@ const AdminDashboardPage = () => {
         role: 'ROLE_USER',
         discordNickname: '',
         minecraftNickname: '',
-        bio: ''
+        bio: '',
+        isPlayer: false
     });
 
     const [editUserForm, setEditUserForm] = useState({
@@ -265,7 +272,7 @@ const AdminDashboardPage = () => {
             await adminApi.updateUser(id, { unlinkDiscord: true });
             alert('Discord аккаунт успешно отвязан');
             setOpenMenuUserId(null);
-            fetchData();
+            refetchCurrentTab();
         } catch (err) {
             console.error(err);
             alert('Не удалось отвязать Discord');
@@ -278,8 +285,8 @@ const AdminDashboardPage = () => {
             await adminApi.createUser(createUserForm);
             alert('Пользователь создан!');
             setShowCreateUserModal(false);
-            setCreateUserForm({ username: '', email: '', password: '', role: 'ROLE_USER', discordNickname: '', minecraftNickname: '', bio: '' });
-            fetchData();
+            setCreateUserForm({ username: '', email: '', password: '', role: 'ROLE_USER', discordNickname: '', minecraftNickname: '', bio: '', isPlayer: false });
+            refetchCurrentTab();
         } catch (err: any) {
             console.error(err);
             alert(err.response?.data?.message || err.response?.data?.error || 'Failed to create user');
@@ -292,7 +299,7 @@ const AdminDashboardPage = () => {
             await adminApi.updateUser(editUserForm.id, editUserForm);
             alert('Пользователь обновлен!');
             setShowEditUserModal(false);
-            fetchData();
+            refetchCurrentTab();
         } catch (err: any) {
             console.error(err);
             alert(err.response?.data?.message || err.response?.data?.error || 'Failed to update user');
@@ -322,29 +329,55 @@ const AdminDashboardPage = () => {
         setOpenMenuUserId(null);
     };
 
-    useEffect(() => {
-        if (user && !isAdmin && !isModerator) {
-            navigate('/');
-        }
-        if (user && (isAdmin || isModerator)) {
-            if (activeTab === 'logs') {
-                fetchLogs(0);
-            } else {
-                fetchData();
-            }
-        }
-    }, [user, isAdmin, navigate, activeTab]);
-
-    useEffect(() => {
-        if (activeTab === 'logs') {
-            const timer = setTimeout(() => {
-                fetchLogs(0);
-            }, 500);
-            return () => clearTimeout(timer);
-        }
-    }, [logsSearch]);
-
     const [loading, setLoading] = useState(false);
+
+    const fetchUsers = async (page: number) => {
+        try {
+            setLoading(true);
+            const res = await adminApi.getAllUsers(page, 50);
+            setUsers(res.content);
+            setTotalUsersPages(res.totalPages);
+            setUsersPage(page);
+        } catch (err) {
+            console.error('Failed to fetch users:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchApplications = async (page: number) => {
+        try {
+            setLoading(true);
+            const res = await applicationsApi.getAll(undefined, page, 50);
+            setApplications(res.content);
+            setTotalAppsPages(res.totalPages);
+            setAppsPage(page);
+        } catch (err) {
+            console.error('Failed to fetch applications:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchSettingsAndBadges = async () => {
+        if (!isAdmin) return;
+        try {
+            const promises: Promise<any>[] = [
+                adminApi.getBadges(),
+                adminApi.getSettings()
+            ];
+            const results = await Promise.all(promises);
+            setAllBadges(results[0]);
+            setSiteSettings(results[1]);
+        } catch (err) {
+            console.error('Failed to fetch settings/badges:', err);
+        }
+    };
+
+    const refetchCurrentTab = () => {
+        if (activeTab === 'users') fetchUsers(usersPage);
+        else if (activeTab === 'applications') fetchApplications(appsPage);
+    };
 
     const fetchLogs = async (page: number) => {
         try {
@@ -360,31 +393,35 @@ const AdminDashboardPage = () => {
         }
     };
 
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const promises: Promise<any>[] = [
-                adminApi.getAllUsers(),
-                applicationsApi.getAll()
-            ];
-            if (isAdmin) {
-                promises.push(adminApi.getBadges());
-                promises.push(adminApi.getSettings());
-            }
-
-            const results = await Promise.all(promises);
-            setUsers(results[0]);
-            setApplications(results[1]);
-            if (isAdmin) {
-                setAllBadges(results[2]);
-                setSiteSettings(results[3]);
-            }
-        } catch (err) {
-            console.error('Failed to fetch data:', err);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (user && !isAdmin && !isModerator) {
+            navigate('/');
         }
-    };
+        if (user && (isAdmin || isModerator)) {
+            if (activeTab === 'users') {
+                fetchUsers(usersPage);
+            } else if (activeTab === 'applications') {
+                fetchApplications(appsPage);
+            } else if (activeTab === 'logs') {
+                fetchLogs(logsPage);
+            }
+        }
+    }, [user, isAdmin, navigate, activeTab]);
+
+    useEffect(() => {
+        if (user && isAdmin) {
+            fetchSettingsAndBadges();
+        }
+    }, [user, isAdmin]);
+
+    useEffect(() => {
+        if (activeTab === 'logs') {
+            const timer = setTimeout(() => {
+                fetchLogs(0);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [logsSearch]);
 
     const handleBan = async () => {
         if (!banReason) return alert('Введите причину бана');
@@ -394,7 +431,7 @@ const AdminDashboardPage = () => {
             setBanReason('');
             setSelectedUserId(null);
             setShowBanModal(false);
-            fetchData();
+            refetchCurrentTab();
         } catch (err) {
             console.error(err);
             alert('Failed to ban user');
@@ -406,7 +443,7 @@ const AdminDashboardPage = () => {
         try {
             await adminApi.resetSeason();
             alert('Сезон успешно сброшен!');
-            fetchData();
+            refetchCurrentTab();
         } catch (err) {
             console.error('Failed to reset season', err);
             alert('Ошибка при сбросе сезона');
@@ -417,7 +454,7 @@ const AdminDashboardPage = () => {
         if (!confirm('Разбанить пользователя?')) return;
         try {
             await adminApi.unbanUser(id);
-            fetchData();
+            refetchCurrentTab();
             setOpenMenuUserId(null);
         } catch (err) {
             console.error(err);
@@ -480,7 +517,7 @@ const AdminDashboardPage = () => {
             await applicationsApi.updateStatus(id, status, adminComment);
             setAdminComment('');
             setShowAppModal(false);
-            fetchData();
+            refetchCurrentTab();
         } catch (err) {
             console.error(err);
             alert('Failed to update status');
@@ -740,7 +777,7 @@ const AdminDashboardPage = () => {
                                                                             {isAdmin && (
                                                                                 <>
                                                                                     <div className="h-px bg-white/5 my-1" />
-                                                                                    <button onClick={async (e) => { e.stopPropagation(); if (confirm('Удалить навсегда?')) { try { await adminApi.deleteUser(u.id); fetchData(); } catch (err) { console.error(err); } } }} className="w-full text-left px-4 py-2 hover:bg-red-500/10 flex items-center gap-3 transition-colors text-xs font-bold text-red-600"><Trash2 className="w-4 h-4" /> Удалить</button>
+                                                                                    <button onClick={async (e) => { e.stopPropagation(); if (confirm('Удалить навсегда?')) { try { await adminApi.deleteUser(u.id); refetchCurrentTab(); } catch (err) { console.error(err); } } }} className="w-full text-left px-4 py-2 hover:bg-red-500/10 flex items-center gap-3 transition-colors text-xs font-bold text-red-600"><Trash2 className="w-4 h-4" /> Удалить</button>
                                                                                 </>
                                                                             )}
                                                                         </>
@@ -912,7 +949,7 @@ const AdminDashboardPage = () => {
                                                                 {isAdmin && (
                                                                     <>
                                                                         <div className="h-px bg-white/5 mx-2 my-1" />
-                                                                        <button onClick={async (e) => { e.stopPropagation(); if (confirm('Удалить навсегда?')) { try { await adminApi.deleteUser(u.id); fetchData(); } catch (err) { console.error(err); } } }} className="w-full text-left px-4 py-3 hover:bg-red-500/10 flex items-center gap-3 transition-colors text-[11px] font-bold text-red-600 group/del">
+                                                                        <button onClick={async (e) => { e.stopPropagation(); if (confirm('Удалить навсегда?')) { try { await adminApi.deleteUser(u.id); refetchCurrentTab(); } catch (err) { console.error(err); } } }} className="w-full text-left px-4 py-3 hover:bg-red-500/10 flex items-center gap-3 transition-colors text-[11px] font-bold text-red-600 group/del">
                                                                             <div className="w-7 h-7 bg-red-500/10 rounded-lg flex items-center justify-center group-hover/del:bg-red-500/20 transition-colors shrink-0">
                                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                                             </div>
@@ -945,6 +982,28 @@ const AdminDashboardPage = () => {
                                                 )}
                                             </div>
                                         ))}
+                                    </div>
+
+                                    <div className="flex justify-center gap-2 py-4 border-t border-white/5 mt-auto shrink-0">
+                                        <button
+                                            onClick={() => fetchUsers(Math.max(0, usersPage - 1))}
+                                            disabled={usersPage === 0}
+                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl disabled:opacity-50 transition-colors border border-white/10"
+                                        >
+                                            <ChevronLeft className="w-5 h-5 text-gray-400" />
+                                        </button>
+                                        <div className="flex items-center px-4 bg-white/5 rounded-xl border border-white/5">
+                                            <span className="text-xs font-mono text-gray-400 font-bold">
+                                                {totalUsersPages > 0 ? usersPage + 1 : 0} / {totalUsersPages}
+                                            </span>
+                                        </div>
+                                        <button
+                                            onClick={() => fetchUsers(Math.min(totalUsersPages - 1, usersPage + 1))}
+                                            disabled={usersPage >= totalUsersPages - 1}
+                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl disabled:opacity-50 transition-colors border border-white/10"
+                                        >
+                                            <ChevronRight className="w-5 h-5 text-gray-400" />
+                                        </button>
                                     </div>
                                 </div>
                             ) : activeTab === 'applications' ? (
@@ -1067,6 +1126,28 @@ const AdminDashboardPage = () => {
                                                 ))
                                             )}
                                         </div>
+
+                                        <div className="flex justify-center gap-2 py-4 border-t border-white/5 mt-auto bg-black/20 shrink-0">
+                                            <button
+                                                onClick={() => fetchApplications(Math.max(0, appsPage - 1))}
+                                                disabled={appsPage === 0}
+                                                className="p-2 bg-white/5 hover:bg-white/10 rounded-xl disabled:opacity-50 transition-colors border border-white/10"
+                                            >
+                                                <ChevronLeft className="w-5 h-5 text-gray-400" />
+                                            </button>
+                                            <div className="flex items-center px-4 bg-white/5 rounded-xl border border-white/5">
+                                                <span className="text-xs font-mono text-gray-400 font-bold">
+                                                    {totalAppsPages > 0 ? appsPage + 1 : 0} / {totalAppsPages}
+                                                </span>
+                                            </div>
+                                            <button
+                                                onClick={() => fetchApplications(Math.min(totalAppsPages - 1, appsPage + 1))}
+                                                disabled={appsPage >= totalAppsPages - 1}
+                                                className="p-2 bg-white/5 hover:bg-white/10 rounded-xl disabled:opacity-50 transition-colors border border-white/10"
+                                            >
+                                                <ChevronRight className="w-5 h-5 text-gray-400" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ) : activeTab === 'badges' ? (
@@ -1105,7 +1186,7 @@ const AdminDashboardPage = () => {
                                                         onClick={async () => {
                                                             if (confirm('Удалить значок?')) {
                                                                 await adminApi.deleteBadge(badge.id);
-                                                                fetchData();
+                                                                refetchCurrentTab();
                                                             }
                                                         }}
                                                         className="p-2 hover:bg-red-500/10 rounded-lg text-red-400"
@@ -1456,6 +1537,18 @@ const AdminDashboardPage = () => {
                                             <option value="ROLE_MODERATOR">Moderator</option>
                                         </select>
                                     </div>
+                                    <div className="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5">
+                                        <input
+                                            type="checkbox"
+                                            id="createIsPlayer"
+                                            checked={createUserForm.isPlayer}
+                                            onChange={e => setCreateUserForm({ ...createUserForm, isPlayer: e.target.checked })}
+                                            className="w-5 h-5 rounded border-white/10 text-story-gold focus:ring-story-gold bg-black/50"
+                                        />
+                                        <label htmlFor="createIsPlayer" className="text-sm font-medium text-gray-300 cursor-pointer">
+                                            Статус игрока (Whitelist)
+                                        </label>
+                                    </div>
 
                                     <div className="flex gap-2 pt-2">
                                         <button type="submit" className="flex-1 bg-story-gold hover:bg-story-gold-light text-black font-bold py-2 rounded-xl transition-colors">Создать</button>
@@ -1568,7 +1661,7 @@ const AdminDashboardPage = () => {
                                                                 } else {
                                                                     await adminApi.assignBadge(editUserForm.id, badge.id);
                                                                 }
-                                                                fetchData();
+                                                                refetchCurrentTab();
                                                             } catch (err) {
                                                                 console.error(err);
                                                             }
@@ -1974,7 +2067,7 @@ const AdminDashboardPage = () => {
                                             await adminApi.createBadge(data);
                                         }
                                         setShowBadgeModal(false);
-                                        fetchData();
+                                        fetchSettingsAndBadges();
                                     } catch (err) {
                                         console.error(err);
                                         alert('Ошибка при сохранении значка');

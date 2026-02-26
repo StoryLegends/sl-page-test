@@ -200,9 +200,6 @@ const RegisterPage = () => {
                                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
-                                    <p className="text-[10px] text-gray-500 mt-2 ml-1 leading-tight">
-                                        Пароль должен содержать минимум <span className="text-gray-300">8 символов</span>, включая <span className="text-gray-300">цифру</span>, <span className="text-gray-300">строчную</span> и <span className="text-gray-300">заглавную</span> буквы, а также <span className="text-gray-300">специальный символ</span>.
-                                    </p>
                                 </div>
 
                                 <div>
@@ -225,6 +222,9 @@ const RegisterPage = () => {
                                             {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                                         </button>
                                     </div>
+                                    <p className="text-[10px] text-gray-500 mt-2 ml-1 leading-tight">
+                                        Пароль должен содержать минимум <span className="text-gray-300">8 символов</span>, включая <span className="text-gray-300">цифру</span>, <span className="text-gray-300">строчную</span> и <span className="text-gray-300">заглавную</span> буквы, а также <span className="text-gray-300">специальный символ</span>.
+                                    </p>
                                 </div>
 
                                 <button

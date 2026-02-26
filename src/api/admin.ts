@@ -38,8 +38,10 @@ export const adminApi = {
         await apiClient.post('/api/admin/reset-season');
     },
 
-    getAllUsers: async (): Promise<User[]> => {
-        const response = await apiClient.get('/api/admin/users');
+    getAllUsers: async (page = 0, size = 50): Promise<{ content: User[], totalElements: number, totalPages: number }> => {
+        const response = await apiClient.get('/api/admin/users', {
+            params: { page, size }
+        });
         return response.data;
     },
 

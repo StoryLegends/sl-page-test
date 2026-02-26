@@ -436,7 +436,11 @@ const ProfilePage = () => {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     <div className="bg-white/5 border border-white/5 rounded-2xl p-6 flex flex-col gap-2">
                                                         <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest">Discord Tag</span>
-                                                        <p className="text-white font-bold text-lg font-mono">{user.discordNickname || '—'}</p>
+                                                        {user.discordVerified ? (
+                                                            <p className="text-white font-bold text-lg font-mono">{user.discordNickname || '—'}</p>
+                                                        ) : (
+                                                            <p className="text-red-400 text-sm font-bold mt-1">Привяжите Discord 👆</p>
+                                                        )}
                                                     </div>
                                                     <div className="bg-white/5 border border-white/5 rounded-2xl p-6 flex flex-col gap-2">
                                                         <span className="text-[10px] text-gray-500 font-black uppercase tracking-widest">Minecraft Nickname</span>
@@ -473,15 +477,21 @@ const ProfilePage = () => {
                                                                     </button>
                                                                 )}
                                                             </label>
-                                                            <input
-                                                                type="text"
-                                                                value={formData.discordNickname}
-                                                                onChange={(e) => setFormData({ ...formData, discordNickname: e.target.value })}
-                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.discordVerified || (user.isPlayer && !!user.discordNickname) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                                placeholder="user#1234"
-                                                                disabled={user.discordVerified || (user.isPlayer && !!user.discordNickname)}
-                                                                title={user.isPlayer && !!user.discordNickname ? "Игрокам запрещено изменять никнеймы" : ""}
-                                                            />
+                                                            {user.isPlayer && !user.discordVerified ? (
+                                                                <div className="w-full px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center justify-center">
+                                                                    Привяжите Discord выше 👆
+                                                                </div>
+                                                            ) : (
+                                                                <input
+                                                                    type="text"
+                                                                    value={formData.discordNickname}
+                                                                    onChange={(e) => setFormData({ ...formData, discordNickname: e.target.value })}
+                                                                    className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.discordVerified || user.isPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                    placeholder="user#1234"
+                                                                    disabled={user.discordVerified || user.isPlayer}
+                                                                    title={user.isPlayer ? "Игрокам запрещено изменять никнейм вручную" : user.discordVerified ? "Изменить никнейм можно только после отвязки" : ""}
+                                                                />
+                                                            )}
                                                         </div>
                                                         <div>
                                                             <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
@@ -491,10 +501,10 @@ const ProfilePage = () => {
                                                                 type="text"
                                                                 value={formData.minecraftNickname}
                                                                 onChange={(e) => setFormData({ ...formData, minecraftNickname: e.target.value })}
-                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.isPlayer && !!user.minecraftNickname ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                                className={`w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-story-gold/50 focus:bg-white/10 transition-colors text-white ${user.isPlayer ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                 placeholder="Steve"
-                                                                disabled={user.isPlayer && !!user.minecraftNickname}
-                                                                title={user.isPlayer && !!user.minecraftNickname ? "Игрокам запрещено изменять никнеймы" : ""}
+                                                                disabled={user.isPlayer}
+                                                                title={user.isPlayer ? "Игрокам запрещено изменять никнеймы" : ""}
                                                             />
                                                         </div>
                                                     </div>
