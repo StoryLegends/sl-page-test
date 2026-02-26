@@ -3,6 +3,8 @@ import { usersApi, type User } from '../api';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import { Users, Search, X, MessageSquare, Gamepad2 } from 'lucide-react';
+import UserAvatar from '../components/UserAvatar';
+
 
 const PlayersPage = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -74,15 +76,11 @@ const PlayersPage = () => {
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-story-gold to-transparent opacity-0 group-hover:opacity-50 transition-opacity" />
 
                                     <div className="flex items-center gap-4 mb-4">
-                                        <div className="w-12 h-12 rounded-full bg-neutral-900 overflow-hidden border border-white/10 relative">
-                                            {user.avatarUrl ? (
-                                                <img src={user.avatarUrl} alt={user.username} className="avatar-img" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold text-lg">
-                                                    {user.username.charAt(0).toUpperCase()}
-                                                </div>
-                                            )}
-                                        </div>
+                                        <UserAvatar
+                                            avatarUrl={user.avatarUrl}
+                                            username={user.username}
+                                            size="lg"
+                                        />
                                         <div>
                                             <div className="flex items-center gap-2 mb-1.5 min-w-0">
                                                 <h3 className="font-bold text-white text-lg truncate leading-none">{user.username}</h3>
@@ -145,15 +143,11 @@ const PlayersPage = () => {
                         {/* Content */}
                         <div className="px-8 pb-8 -mt-12 text-left">
                             <div className="flex justify-between items-end mb-6">
-                                <div className="w-24 h-24 rounded-2xl bg-neutral-900 border-4 border-zinc-900 overflow-hidden shadow-xl relative">
-                                    {selectedUser.avatarUrl ? (
-                                        <img src={selectedUser.avatarUrl} alt={selectedUser.username} className="avatar-img" />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-500 font-bold text-3xl">
-                                            {selectedUser.username.charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
-                                </div>
+                                <UserAvatar
+                                    avatarUrl={selectedUser.avatarUrl}
+                                    username={selectedUser.username}
+                                    size="xl"
+                                />
                                 <button
                                     onClick={() => setShowModal(false)}
                                     className="p-2 bg-white/5 hover:bg-white/10 rounded-xl transition-colors border border-white/10 text-gray-400 hover:text-white"

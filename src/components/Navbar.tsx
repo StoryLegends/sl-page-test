@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Youtube, Shield, User, FileText } from 'lucide-react';
+import UserAvatar from './UserAvatar';
+import { useAuth } from '../context/AuthContext';
+
 
 const DiscordIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +17,6 @@ const TelegramIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -141,13 +143,11 @@ const Navbar: React.FC = () => {
                 >
                   {user ? (
                     <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden bg-neutral-900 shadow-lg relative transition-all ${userMenuOpen ? 'ring-2 ring-story-gold' : 'ring-1 ring-white/10'}`}>
-                      {user.avatarUrl ? (
-                        <img src={user.avatarUrl} alt={user.username} className="avatar-img" />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-story-gold to-story-gold-dark flex items-center justify-center text-black font-bold text-xs md:text-sm">
-                          {user.username.charAt(0).toUpperCase()}
-                        </div>
-                      )}
+                      <UserAvatar
+                        avatarUrl={user.avatarUrl}
+                        username={user.username}
+                        size="sm"
+                      />
                     </div>
                   ) : (
                     <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border transition-all ${userMenuOpen ? 'bg-story-gold/20 text-story-gold border-story-gold' : 'bg-story-gold/10 text-story-gold border-story-gold/50'}`}>

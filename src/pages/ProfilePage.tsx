@@ -6,6 +6,8 @@ import SEO from '../components/SEO';
 import { User as UserIcon, Settings, Edit3, ShieldCheck, Mail, ExternalLink, LogOut, CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react';
 import { applicationsApi, usersApi, totpApi, authApi } from '../api';
 import { useNotification } from '../context/NotificationContext';
+import UserAvatar from '../components/UserAvatar';
+
 
 const ProfilePage = () => {
     const { user, isAdmin, refreshUser } = useAuth();
@@ -229,16 +231,13 @@ const ProfilePage = () => {
                             <div className="bg-black/40 border border-white/10 rounded-2xl p-6 backdrop-blur-md shadow-xl text-center relative overflow-hidden">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-story-gold to-transparent opacity-50" />
 
-                                <div className="relative group mx-auto w-32 h-32 mb-4">
-                                    <div className="w-32 h-32 rounded-full bg-neutral-900 overflow-hidden shadow-lg shadow-story-gold/20 mx-auto border-2 border-white/5 relative">
-                                        {user.avatarUrl ? (
-                                            <img src={user.avatarUrl} alt={user.username} className="avatar-img" />
-                                        ) : (
-                                            <div className="w-full h-full bg-gradient-to-br from-story-gold to-story-gold-dark flex items-center justify-center text-black font-bold text-4xl">
-                                                {user.username.charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
-                                    </div>
+                                <div className="relative group mx-auto mb-4">
+                                    <UserAvatar
+                                        avatarUrl={user.avatarUrl}
+                                        username={user.username}
+                                        size="xl"
+                                        className="mx-auto"
+                                    />
                                 </div>
 
                                 <h2 className="text-2xl font-bold font-minecraft text-white mb-2 text-center">

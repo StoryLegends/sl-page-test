@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import { Users, FileText, Shield, ShieldCheck, Ban, Search, Filter, MoreVertical, Edit, Key, Trash2, X, Copy, Mail, CheckCircle2, XCircle, Settings, AlertCircle, History, Send, Database, Download, Upload, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import UserAvatar from '../components/UserAvatar';
+
 
 const AdminDashboardPage = () => {
     const { user, isAdmin, isModerator } = useAuth();
@@ -694,9 +696,11 @@ const AdminDashboardPage = () => {
                                                     <tr key={u.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
                                                         <td className="px-3 py-3">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-full overflow-hidden bg-neutral-900 border border-white/10">
-                                                                    {u.avatarUrl ? <img src={u.avatarUrl} alt="" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">{u.username.charAt(0)}</div>}
-                                                                </div>
+                                                                <UserAvatar
+                                                                    avatarUrl={u.avatarUrl}
+                                                                    username={u.username}
+                                                                    size="sm"
+                                                                />
                                                                 <div>
                                                                     <div className="text-sm font-bold text-white leading-tight">{u.username}</div>
                                                                     <div className="text-[10px] text-gray-500 font-mono tracking-tight">#{u.id}</div>
@@ -806,13 +810,12 @@ const AdminDashboardPage = () => {
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex items-center gap-3.5">
                                                         <div className="relative">
-                                                            <div className="w-12 h-12 rounded-2xl overflow-hidden bg-neutral-900 border border-white/10 shadow-lg">
-                                                                {u.avatarUrl ? (
-                                                                    <img src={u.avatarUrl} alt="" className="avatar-img" />
-                                                                ) : (
-                                                                    <div className="w-full h-full flex items-center justify-center font-bold text-gray-600 text-xl">{u.username.charAt(0)}</div>
-                                                                )}
-                                                            </div>
+                                                            <UserAvatar
+                                                                avatarUrl={u.avatarUrl}
+                                                                username={u.username}
+                                                                size="lg"
+                                                                rounded="rounded-2xl"
+                                                            />
                                                         </div>
                                                         <div className="flex-grow min-w-0">
                                                             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
