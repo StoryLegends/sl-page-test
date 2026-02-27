@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { usersApi, type User } from '../api';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
-import { Users, Search, X, MessageSquare, Gamepad2 } from 'lucide-react';
+import { Users, Search, X, MessageSquare, Gamepad2, Crown } from 'lucide-react';
 import UserAvatar from '../components/UserAvatar';
 
 
@@ -28,10 +28,22 @@ const PlayersPage = () => {
         }
     };
 
-    const filteredUsers = users.filter(u =>
-        u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.minecraftNickname?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredUsers = users
+        .filter(u =>
+            u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.minecraftNickname?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => {
+            const aIsAdmin = a.role === 'ROLE_ADMIN' || a.role === 'ROLE_MODERATOR';
+            const bIsAdmin = b.role === 'ROLE_ADMIN' || b.role === 'ROLE_MODERATOR';
+
+            // Admins first
+            if (aIsAdmin && !bIsAdmin) return -1;
+            if (!bIsAdmin && aIsAdmin) return 1;
+
+            // Then alphabetical by username
+            return a.username.localeCompare(b.username);
+        });
 
     return (
         <Layout>
@@ -71,9 +83,21 @@ const PlayersPage = () => {
                                         setSelectedUser(user);
                                         setShowModal(true);
                                     }}
-                                    className="bg-black/40 border border-white/10 rounded-2xl p-6 backdrop-blur-md hover:border-story-gold/30 hover:bg-white/5 transition-all group relative overflow-hidden cursor-pointer active:scale-[0.98]"
+                                    className={`
+                                        bg-black/40 border rounded-2xl p-6 backdrop-blur-md transition-all group relative overflow-hidden cursor-pointer active:scale-[0.98]
+                                        ${(user.role === 'ROLE_ADMIN' || user.role === 'ROLE_MODERATOR')
+                                            ? 'border-story-gold/30 shadow-[0_0_30px_rgba(255,191,0,0.1)] hover:shadow-[0_0_40px_rgba(255,191,0,0.2)] hover:border-story-gold/50'
+                                            : 'border-white/10 hover:border-story-gold/30 hover:bg-white/5'}
+                                    `}
                                 >
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-story-gold to-transparent opacity-0 group-hover:opacity-50 transition-opacity" />
+                                    {(user.role === 'ROLE_ADMIN' || user.role === 'ROLE_MODERATOR') ? (
+                                        <>
+                                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-story-gold to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+                                            <Crown className="absolute -right-4 -bottom-4 w-32 h-32 text-story-gold/10 -rotate-12 pointer-events-none group-hover:text-story-gold/[0.15] group-hover:scale-110 transition-all duration-500" />
+                                        </>
+                                    ) : (
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-story-gold to-transparent opacity-0 group-hover:opacity-50 transition-opacity" />
+                                    )}
 
                                     <div className="flex items-center gap-4 mb-4">
                                         <UserAvatar
@@ -82,11 +106,11 @@ const PlayersPage = () => {
                                             size="lg"
                                         />
                                         <div>
-                                            <div className="flex items-center gap-2 mb-1.5 min-w-0">
+                                            <div className="flex items-center gap-2 mb-1.5 min-w-0 relative z-10">
                                                 <h3 className="font-bold text-white text-lg truncate leading-none">{user.username}</h3>
                                                 {(user.role === 'ROLE_ADMIN' || user.role === 'ROLE_MODERATOR') && (
-                                                    <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest bg-red-500/20 text-red-300 border border-red-500/30 whitespace-nowrap">
-                                                        {user.role === 'ROLE_ADMIN' ? 'Admin' : 'Moderator'}
+                                                    <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border whitespace-nowrap bg-red-500/20 text-red-300 border-red-500/30">
+                                                        Admin
                                                     </span>
                                                 )}
                                             </div>
@@ -161,8 +185,8 @@ const PlayersPage = () => {
                                     {selectedUser.username}
                                 </h3>
                                 <div className="flex flex-wrap gap-2 items-center">
-                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest ${selectedUser.role === 'ROLE_ADMIN' ? 'bg-red-500/20 text-red-300' : 'bg-blue-500/20 text-blue-300'}`}>
-                                        {selectedUser.role === 'ROLE_ADMIN' ? 'Admin' : 'Player'}
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest ${(selectedUser.role === 'ROLE_ADMIN' || selectedUser.role === 'ROLE_MODERATOR') ? 'bg-red-500/20 text-red-300' : 'bg-blue-500/20 text-blue-300'}`}>
+                                        {(selectedUser.role === 'ROLE_ADMIN' || selectedUser.role === 'ROLE_MODERATOR') ? 'Admin' : 'Player'}
                                     </span>
                                     {selectedUser.badges && selectedUser.badges.map(badge => (
                                         <div
