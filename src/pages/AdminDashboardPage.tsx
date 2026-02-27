@@ -2325,8 +2325,8 @@ const AdminDashboardPage = () => {
                                         <Shield className="w-7 h-7" />
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-black text-white uppercase tracking-tightAlpha">Критическое действие</h3>
-                                        <p className="text-red-400/60 text-xs font-bold uppercase tracking-widestAlpha">Сброс статусов сезона</p>
+                                        <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight">Критическое действие</h3>
+                                        <p className="text-red-500/80 text-[10px] font-black uppercase tracking-[0.2em]">Сброс статусов сезона</p>
                                     </div>
                                     <button
                                         onClick={() => setShowResetSeasonModal(false)}
@@ -2337,11 +2337,11 @@ const AdminDashboardPage = () => {
                                 </div>
 
                                 <div className="bg-red-500/5 border border-red-500/10 rounded-2xl p-6 mb-8">
-                                    <p className="text-gray-300 text-sm leading-relaxed mb-6 font-medium">
+                                    <p className="text-gray-400 text-xs md:text-sm leading-relaxed mb-6 font-bold uppercase tracking-wide">
                                         Для подтверждения сброса сезона, введите текст ниже вручную (копирование запрещено):
                                     </p>
-                                    <div className="bg-black/50 p-4 rounded-xl border border-white/5 mb-6 text-center select-none pointer-events-none">
-                                        <p className="text-red-400 font-black tracking-wider text-sm md:text-base leading-loose select-none">
+                                    <div className="bg-black/80 p-5 rounded-2xl border border-white/5 mb-8 text-center select-none pointer-events-none shadow-inner">
+                                        <p className="text-red-500 font-black tracking-widest text-sm md:text-lg leading-relaxed select-none uppercase">
                                             STORYLEGENDS СИЛА!!! МИКОЛАЙЧИК МОГИЛА!!!! 22
                                         </p>
                                     </div>
@@ -2353,11 +2353,11 @@ const AdminDashboardPage = () => {
                                                 value={confirmTypeText}
                                                 onChange={(e) => setConfirmTypeText(e.target.value)}
                                                 onPaste={(e) => e.preventDefault()}
-                                                placeholder="Введите текст выше..."
-                                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-gray-700 focus:outline-none focus:border-red-500/50 focus:ring-4 focus:ring-red-500/5 transition-all font-bold"
+                                                placeholder="Введите подтверждающий текст..."
+                                                className="w-full bg-black/60 border border-white/10 rounded-2xl px-6 py-5 text-white placeholder:text-gray-800 focus:outline-none focus:border-red-500/50 focus:ring-4 focus:ring-red-500/5 transition-all font-bold text-sm"
                                             />
-                                            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-700 uppercase tracking-widestAlpha group-focus-within:text-red-500/50 transition-colors">
-                                                Manual Type
+                                            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-gray-700 uppercase tracking-widest group-focus-within:text-red-500/50 transition-colors">
+                                                Manual Check
                                             </div>
                                         </div>
 
@@ -2367,8 +2367,8 @@ const AdminDashboardPage = () => {
                                                 value={confirmTotpCode}
                                                 onChange={(e) => setConfirmTotpCode(e.target.value.replace(/\D/g, ''))}
                                                 maxLength={6}
-                                                placeholder="Код 2FA (6 цифр)"
-                                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white text-center tracking-[0.5em] text-xl placeholder:text-[10px] placeholder:tracking-widestAlpha placeholder:font-black placeholder:uppercase focus:outline-none focus:border-story-gold/50 focus:ring-4 focus:ring-story-gold/5 transition-all font-minecraft"
+                                                placeholder="ВВЕДИТЕ 6 ЦИФР КОДА 2FA"
+                                                className="w-full bg-black/60 border border-white/10 rounded-2xl px-6 py-5 text-white text-center tracking-[0.4em] text-2xl placeholder:text-[10px] placeholder:tracking-[0.2em] placeholder:font-black placeholder:uppercase focus:outline-none focus:border-story-gold/50 focus:ring-4 focus:ring-story-gold/5 transition-all font-sans font-black"
                                             />
                                             <ShieldCheck className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-700 group-focus-within:text-story-gold transition-colors" />
                                         </div>
@@ -2385,7 +2385,7 @@ const AdminDashboardPage = () => {
                                     <button
                                         onClick={submitResetSeason}
                                         disabled={confirmTypeText !== "STORYLEGENDS СИЛА!!! МИКОЛАЙЧИК МОГИЛА!!!! 22" || confirmTotpCode.length !== 6}
-                                        className="flex-1 py-4 bg-red-600 hover:bg-red-500 disabled:opacity-30 disabled:grayscale disabled:hover:bg-red-600 text-white font-black rounded-2xl shadow-[0_10px_30px_rgba(220,38,38,0.3)] transition-all uppercase tracking-widestAlpha text-xs shadow-red-600/20"
+                                        className="flex-[1.5] py-5 bg-red-600 hover:bg-red-500 disabled:opacity-20 disabled:grayscale disabled:hover:bg-red-600 text-white font-black rounded-2xl shadow-[0_10px_40px_rgba(220,38,38,0.2)] transition-all uppercase tracking-widest text-xs"
                                     >
                                         Подтвердить сброс
                                     </button>
