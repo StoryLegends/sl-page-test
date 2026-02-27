@@ -99,7 +99,7 @@ const ApplicationPage = () => {
             console.log('Application submission attempt with token length:', token.length);
             await applicationsApi.create({
                 ...formData,
-                age: formData.age ? parseInt(formData.age) + 1 : 1,
+                age: formData.age ? parseInt(formData.age) : 0,
                 recaptchaToken: token
             });
 
