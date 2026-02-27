@@ -55,6 +55,9 @@ const AdminDashboardPage = () => {
     const [userWarnings, setUserWarnings] = useState<any[]>([]);
     const [newWarningReason, setNewWarningReason] = useState('');
     const [isIssuingWarning, setIsIssuingWarning] = useState(false);
+    const [showResetSeasonModal, setShowResetSeasonModal] = useState(false);
+    const [confirmTypeText, setConfirmTypeText] = useState('');
+    const [confirmTotpCode, setConfirmTotpCode] = useState('');
 
     const [badgeForm, setBadgeForm] = useState({
         name: '',
@@ -440,15 +443,39 @@ const AdminDashboardPage = () => {
         }
     };
 
-    const handleResetSeason = async () => {
-        if (!confirm('ВНИМАНИЕ! Это действие сбросит статусы "сезона" у всех пользователей. Они снова получат возможность отправлять заявки. Продолжить?')) return;
+    const handleResetSeason = () => {
+        if (!user?.totpEnabled) {
+            alert('Для выполнения этого действия необходимо настроить 2FA (двухфакторную аутентификацию). Перейдите в настройки профиля.');
+            if (confirm('Настроить 2FA сейчас?')) {
+                navigate('/profile?tab=settings');
+            }
+            return;
+        }
+        setShowResetSeasonModal(true);
+    };
+
+    const submitResetSeason = async () => {
+        const target = "STORYLEGENDS СИЛА!!! МИКОЛАЙЧИК МОГИЛА!!!! 22";
+        if (confirmTypeText !== target) {
+            alert('Текст подтверждения введен неверно! Соблюдайте регистр и знаки.');
+            return;
+        }
+        if (!confirmTotpCode.trim()) {
+            alert('Введите код 2FA');
+            return;
+        }
+
         try {
-            await adminApi.resetSeason();
+            await adminApi.resetSeason(confirmTotpCode);
             alert('Сезон успешно сброшен!');
+            setShowResetSeasonModal(false);
+            setConfirmTypeText('');
+            setConfirmTotpCode('');
             refetchCurrentTab();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to reset season', err);
-            alert('Ошибка при сбросе сезона');
+            const errorMsg = err.response?.data?.message || 'Ошибка при сбросе сезона';
+            alert(errorMsg);
         }
     };
 
@@ -516,6 +543,10 @@ const AdminDashboardPage = () => {
 
     const handleAppStatus = async (id: number, status: string) => {
         try {
+            if (status === 'REJECTED' && currentApp?.user?.id) {
+                // If rejecting, remove isPlayer status
+                await adminApi.updateUser(currentApp.user.id, { isPlayer: false });
+            }
             await applicationsApi.updateStatus(id, status, adminComment);
             setAdminComment('');
             setShowAppModal(false);
@@ -1801,7 +1832,7 @@ const AdminDashboardPage = () => {
                                                     <div className="absolute -left-2 top-0 bottom-0 w-0.5 bg-story-gold/20 rounded-full group-hover:bg-story-gold/50 transition-colors" />
                                                     <span className="text-[10px] text-story-gold uppercase font-bold tracking-[0.2em] block mb-1.5 px-2">Источник:</span>
                                                     <div className="bg-white/5 p-4 rounded-xl border border-white/5 shadow-inner">
-                                                        <p className="text-gray-200 text-sm">{currentApp.source}</p>
+                                                        <p className="text-gray-200 text-sm break-all">{currentApp.source}</p>
                                                     </div>
                                                 </div>
                                                 <div className="relative group">
@@ -2282,6 +2313,87 @@ const AdminDashboardPage = () => {
                         </div>
                     )
                 }
+                {/* Season Reset Confirmation Modal */}
+                {showResetSeasonModal && (
+                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
+                        <div className="bg-[#0c0c0c] border border-red-500/30 rounded-3xl w-full max-w-xl shadow-[0_0_100px_rgba(220,38,38,0.15)] relative overflow-hidden animate-fadeIn">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-500/50 to-transparent" />
+
+                            <div className="p-8">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="w-14 h-14 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20">
+                                        <Shield className="w-7 h-7" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-black text-white uppercase tracking-tightAlpha">Критическое действие</h3>
+                                        <p className="text-red-400/60 text-xs font-bold uppercase tracking-widestAlpha">Сброс статусов сезона</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowResetSeasonModal(false)}
+                                        className="ml-auto w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all border border-white/5"
+                                    >
+                                        <X className="w-5 h-5 text-gray-500" />
+                                    </button>
+                                </div>
+
+                                <div className="bg-red-500/5 border border-red-500/10 rounded-2xl p-6 mb-8">
+                                    <p className="text-gray-300 text-sm leading-relaxed mb-6 font-medium">
+                                        Для подтверждения сброса сезона, введите текст ниже вручную (копирование запрещено):
+                                    </p>
+                                    <div className="bg-black/50 p-4 rounded-xl border border-white/5 mb-6 text-center select-none pointer-events-none">
+                                        <p className="text-red-400 font-black tracking-wider text-sm md:text-base leading-loose select-none">
+                                            STORYLEGENDS СИЛА!!! МИКОЛАЙЧИК МОГИЛА!!!! 22
+                                        </p>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="relative group">
+                                            <input
+                                                type="text"
+                                                value={confirmTypeText}
+                                                onChange={(e) => setConfirmTypeText(e.target.value)}
+                                                onPaste={(e) => e.preventDefault()}
+                                                placeholder="Введите текст выше..."
+                                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-gray-700 focus:outline-none focus:border-red-500/50 focus:ring-4 focus:ring-red-500/5 transition-all font-bold"
+                                            />
+                                            <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-700 uppercase tracking-widestAlpha group-focus-within:text-red-500/50 transition-colors">
+                                                Manual Type
+                                            </div>
+                                        </div>
+
+                                        <div className="relative group">
+                                            <input
+                                                type="text"
+                                                value={confirmTotpCode}
+                                                onChange={(e) => setConfirmTotpCode(e.target.value.replace(/\D/g, ''))}
+                                                maxLength={6}
+                                                placeholder="Код 2FA (6 цифр)"
+                                                className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white text-center tracking-[0.5em] text-xl placeholder:text-[10px] placeholder:tracking-widestAlpha placeholder:font-black placeholder:uppercase focus:outline-none focus:border-story-gold/50 focus:ring-4 focus:ring-story-gold/5 transition-all font-minecraft"
+                                            />
+                                            <ShieldCheck className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-700 group-focus-within:text-story-gold transition-colors" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <button
+                                        onClick={() => setShowResetSeasonModal(false)}
+                                        className="flex-1 py-4 bg-white/5 hover:bg-white/10 text-gray-400 font-black rounded-2xl border border-white/5 transition-all uppercase tracking-widestAlpha text-xs"
+                                    >
+                                        Отмена
+                                    </button>
+                                    <button
+                                        onClick={submitResetSeason}
+                                        disabled={confirmTypeText !== "STORYLEGENDS СИЛА!!! МИКОЛАЙЧИК МОГИЛА!!!! 22" || confirmTotpCode.length !== 6}
+                                        className="flex-1 py-4 bg-red-600 hover:bg-red-500 disabled:opacity-30 disabled:grayscale disabled:hover:bg-red-600 text-white font-black rounded-2xl shadow-[0_10px_30px_rgba(220,38,38,0.3)] transition-all uppercase tracking-widestAlpha text-xs shadow-red-600/20"
+                                    >
+                                        Подтвердить сброс
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </>
         </Layout >
     );
